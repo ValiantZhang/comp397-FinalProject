@@ -1,17 +1,17 @@
 body {
-    background-color: darkgrey;
+    background-color: #242424;
 }
 
 .game {
-    width : 80%;
-    margin: 0 auto;
+    text-align: center;
+    margin-top: 20px;
 }
 
 canvas {
+    width: 45%;
     border: 1px solid black;
     border-radius: 10px;
     text-align: center;
-    background-color: #5D94FB;
-    margin-left: 10%;
-    /*HINT: Hide the cursor here */
+    background-color: #121212;
+    margin: 0 auto;
 }

@@ -5,6 +5,7 @@
         "sourceMap": true
     }, "exclude": [
         "Scripts/lib",
-        "node_modules"
+        "node_modules",
+        ".c9"
     ]
 }
