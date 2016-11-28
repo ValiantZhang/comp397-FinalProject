@@ -7,5 +7,6 @@ var controls;
     controls.SHOOT = false;
     controls.RUN = false;
     controls.JUMP = false;
+    controls.SHIFT = false;
 })(controls || (controls = {}));
 //# sourceMappingURL=controls.js.map

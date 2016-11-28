@@ -36,7 +36,8 @@ function init() {
         images: [assets.getResult("player")],
         frames: { width: 120, height: 120, count: 32, regX: 60, regY: 60, spacing: 0, margin: 0 },
         animations: {
-            idle: 5
+            idle: 5,
+            run: { frames: [8, 9, 10, 11, 12, 13, 14, 15], speed: 0.5 },
         }
     };
     // let atlasData = {

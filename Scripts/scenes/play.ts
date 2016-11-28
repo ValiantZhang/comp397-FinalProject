@@ -2,14 +2,18 @@ module scenes {
     export class Play extends objects.Scene {
 
          private _bg : objects.Parallax;
+         private _fg : objects.Parallax;
+         private _dimensionFilter : createjs.Bitmap;
+         private _dimensionFilter2 : createjs.Bitmap;
+         private _normalView : boolean;
 
         // private _ground : createjs.Bitmap;
-        // private _player : objects.Player;
+        private _player : objects.Player;
 
         // private _pipes : objects.Pipe[];
         // private _blocks : objects.Block[];
         // private _qBlocks : objects.qBlock[];
-        // private _scrollTrigger : number = 350;
+        private _scrollTrigger : number;
         
         private _scrollableObjContainer : createjs.Container;
 
@@ -21,85 +25,80 @@ module scenes {
 
         public start() : void {
 
-            this._scrollableObjContainer = new createjs.Container();
+            // Set scroll trigger
+            this._scrollTrigger = 600;
+            this._normalView = true;
+
+            // Add bg
             this._bg = new objects.Parallax(assets.getResult("bgBack"));
-            this._bg.blurImg(3);
+            this._bg.setAutoScroll(false);
             this.addChild(this._bg);
-            
-            // Add filter
+
+            // Add filters
             this._dimensionFilter = new createjs.Bitmap(assets.getResult("filter"));
             this.addChild(this._dimensionFilter);
+            this._dimensionFilter2 = new createjs.Bitmap(assets.getResult("filterAlt"));
             
             // Add foreground
-            this._fg = new createjs.Bitmap(assets.getResult("bgFront"));
+            this._fg = new objects.Parallax(assets.getResult("bgFront"));
+            this._fg.setAutoScroll(false);
             this.addChild(this._fg);
+
+            //this._scrollableObjContainer = new createjs.Container();
             
             
             this._player = new objects.Player("idle");
-            this._player.x = config.Screen.CENTER_X - 300;
-            this._player.y = config.Screen.CENTER_Y + 150;
+            this._player.position.x = config.Screen.CENTER_X;
+            this._player.position.y = config.Screen.CENTER_Y + 150;
             this.addChild(this._player);
 
-            // this._pipes = [];
-            // this._pipes.push(new objects.Pipe(config.PipeSize.SMALL, new objects.Vector2(1208, 450)));
-            // this._pipes.push(new objects.Pipe(config.PipeSize.MEDIUM, new objects.Vector2(1640, 408)));
-            // this._pipes.push(new objects.Pipe(config.PipeSize.LARGE, new objects.Vector2(1984,363)));
-            // this._pipes.push(new objects.Pipe(config.PipeSize.LARGE, new objects.Vector2(2460, 363)));
-
-            // this._blocks = [];
-            // this._blocks.push(new objects.Block(new objects.Vector2(861,364)));
-            // this._blocks.push(new objects.Block(new objects.Vector2(946,364)));
-            // this._blocks.push(new objects.Block(new objects.Vector2(1031,364)));
-
-            // this._qBlocks = [];
-            // this._qBlocks.push(new objects.qBlock(new objects.Vector2(688, 364)));
-            // this._qBlocks.push(new objects.qBlock(new objects.Vector2(906, 364)));
-            // this._qBlocks.push(new objects.qBlock(new objects.Vector2(993, 364)));
-            // this._qBlocks.push(new objects.qBlock(new objects.Vector2(948, 191)));
 
             // this._scrollableObjContainer.addChild(this._bg);
             // this._scrollableObjContainer.addChild(this._player);
             // this._scrollableObjContainer.addChild(this._ground);
-            // for(let pipe of this._pipes) {
-            //     this._scrollableObjContainer.addChild(pipe);
-            // }
-
-            // for(let block of this._blocks) {
-            //     this._scrollableObjContainer.addChild(block);
-            // }
-
-            // for(let qBlock of this._qBlocks) {
-            //     this._scrollableObjContainer.addChild(qBlock);
-            // }
 
             // this._ground.y = 535;
 
-            this.addChild(this._scrollableObjContainer);
+            //this.addChild(this._scrollableObjContainer);
 
             window.onkeydown = this._onKeyDown;
             window.onkeyup = this._onKeyUp;
-
-            // createjs.Sound.play("theme");
 
             stage.addChild(this);
         }
 
         public update() : void {
 
-            // if(controls.LEFT) {
-            //     this._player.moveLeft();
-            // }
-            // if(controls.RIGHT) { 
-            //     this._player.moveRight();
-            // } 
-            // if(controls.JUMP) {
-            //     this._player.jump();
-            // }
+            if (controls.SHIFT){
+                this._dimensionShift();
+                controls.SHIFT = false;
+                this._normalView = this._normalView ? false : true;
+            }
 
-            // if(!controls.RIGHT && !controls.LEFT)
-            // {
-            //     this._player.resetAcceleration();
-            // }
+            if(controls.LEFT) {
+                this._player.moveLeft();
+                if (this._checkScroll()){
+                    this._scrollBG(-1);
+                    this._player.position.x = this._scrollTrigger / 4;
+                }
+            } else if(controls.RIGHT) { 
+                this._player.moveRight();
+                if (this._checkScroll()){
+                    this._scrollBG(1);
+                    this._player.position.x = this._scrollTrigger;
+                }
+            }
+            if(controls.JUMP) {
+                this._player.jump();
+            }
+
+            if(!controls.RIGHT && !controls.LEFT)
+            {
+                this._player.resetAcceleration();
+                this._player.idle();
+            }
+            
+            this._keepAboveGround();
 
             // if(!this._player.getIsGrounded())
             //     this._checkPlayerWithFloor();
@@ -119,12 +118,7 @@ module scenes {
             //     }
             // }
 
-            // this._player.update();
-
-            // if(this.checkScroll()) {
-            //     this._scrollBGForward(this._player.position.x);
-            // }
-
+            this._player.update();
         }
 
         private _onKeyDown(event: KeyboardEvent) : void {
@@ -168,12 +162,10 @@ module scenes {
                 case keys.SPACE:
                     controls.JUMP = false;
                     break;
+                case keys.SHIFT:
+                    controls.SHIFT = true;
+                    break;
             }
-        }
-
-        private _scrollBGForward(speed : number) : void{
-            if(this._scrollableObjContainer.regX < 3071 - 815)
-                this._scrollableObjContainer.regX = speed - 300;
         }
 
         // private _checkPlayerWithFloor() : void {
@@ -183,26 +175,55 @@ module scenes {
         //         this._player.setIsGrounded(true);
         //     }
         // }
+        
+        private _scrollBG(speed : number) : void{
+            this._bg.scroll(speed);
+            this._fg.scroll(speed * 10);
+        }
 
-        // private checkScroll() : boolean {
-        //     if(this._player.x >= this._scrollTrigger) {
-        //         return true;
-        //     }
-        //     else {
-        //         return false;
-        //     }
-        // }
+        private _checkScroll() : boolean {
+            if(this._player.position.x > this._scrollTrigger && controls.RIGHT || 
+                this._player.position.x < this._scrollTrigger / 4 && controls.LEFT) {
+                    
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
 
-        // private checkCollision(obj1 : objects.GameObject, obj2 : objects.GameObject) : boolean {
+        private checkCollision(obj1 : objects.GameObject, obj2 : objects.GameObject) : boolean {
 
-        //     if(obj2.x < obj1.x + obj1.getBounds().width &&
-        //         obj2.x + obj2.getBounds().width > obj1.x &&
-        //         obj2.y < obj1.y + obj1.getBounds().height &&
-        //         obj2.y + obj2.getBounds().height > obj1.y - 10) {
-        //         return true;
-        //     }
+            if(obj2.x < obj1.x + obj1.getBounds().width &&
+                obj2.x + obj2.getBounds().width > obj1.x &&
+                obj2.y < obj1.y + obj1.getBounds().height &&
+                obj2.y + obj2.getBounds().height > obj1.y - 10) {
+                return true;
+            }
 
-        //     return false;
-        // }
+            return false;
+        }
+        
+        private _keepAboveGround() : void{
+            if (this._player.position.y > config.Screen.CENTER_Y + 130){
+                this._player.position.y = config.Screen.CENTER_Y + 130;
+                this._player.setIsGrounded(true);
+            }
+        }
+        
+        // Switch dimensions
+        private _dimensionShift() : void{
+            if (this._normalView){
+                this.removeChild(this._dimensionFilter);
+                this.addChild(this._dimensionFilter2);
+            } else {
+                this.removeChild(this._dimensionFilter2);
+                this.addChild(this._dimensionFilter);
+            }
+            this.removeChild(this._player);
+            this.addChild(this._player);
+            this.removeChild(this._fg);
+            this.addChild(this._fg);
+        }
     }
 }

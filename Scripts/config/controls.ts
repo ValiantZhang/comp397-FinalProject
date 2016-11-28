@@ -6,4 +6,5 @@ module controls {
     export var SHOOT : boolean = false;
     export var RUN : boolean = false;
     export var JUMP : boolean = false;
+    export var SHIFT : boolean = false;
 }

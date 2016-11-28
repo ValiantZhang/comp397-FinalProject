@@ -11,19 +11,25 @@ var objects;
             _super.call(this);
             this._img = new createjs.Bitmap(imgString);
             this._img2 = new createjs.Bitmap(imgString);
+            this._img3 = new createjs.Bitmap(imgString);
             this.start();
         }
         Parallax.prototype.start = function () {
             this.addChild(this._img);
             this.addChild(this._img2);
+            this.addChild(this._img3);
             this._imgWidth = this._img.getBounds().width;
             this._imgHeight = this._img.getBounds().height;
             this._scrollSpeed = 0.2;
+            this._autoScroll = true;
             this._img.x = 0;
             this._img2.x = this._imgWidth;
+            this._img3.x = -this._imgWidth;
         };
         Parallax.prototype.update = function () {
-            this._scrollImgs();
+            if (this._autoScroll) {
+                this._scrollImgs();
+            }
         };
         Parallax.prototype.setSpeed = function (scrollSpeed) {
             this._scrollSpeed = scrollSpeed;
@@ -35,19 +41,42 @@ var objects;
             this._img.cache(this._img.x, this._img.y, this._imgWidth, this._imgHeight);
             this._img2.filters = [this._blurFilter];
             this._img2.cache(this._img2.x, this._img2.y, this._imgWidth, this._imgHeight);
+            this._img3.filters = [this._blurFilter];
+            this._img3.cache(this._img3.x, this._img3.y, this._imgWidth, this._imgHeight);
+        };
+        Parallax.prototype.setAutoScroll = function (autoScroll) {
+            this._autoScroll = autoScroll;
         };
         // Scroll and recycle image
         Parallax.prototype._scrollImgs = function () {
             // Scroll backgrounds
             this._img.x -= this._scrollSpeed;
             this._img2.x -= this._scrollSpeed;
+            this._img3.x -= this._scrollSpeed;
             // Recycle backgrounds
-            if (this._img.x < -this._imgWidth) {
+            if (this._img.x < -this._imgWidth * 2) {
                 this._img.x = this._imgWidth - this._scrollSpeed;
             }
-            if (this._img2.x < -this._imgWidth) {
+            if (this._img2.x < -this._imgWidth * 2) {
                 this._img2.x = this._imgWidth - this._scrollSpeed;
             }
+            if (this._img3.x < -this._imgWidth * 2) {
+                this._img3.x = this._imgWidth - this._scrollSpeed;
+            }
+            if (this._img.x > this._imgWidth * 2) {
+                this._img.x = -this._imgWidth - this._scrollSpeed;
+            }
+            if (this._img2.x > this._imgWidth * 2) {
+                this._img2.x = -this._imgWidth - this._scrollSpeed;
+            }
+            if (this._img3.x > this._imgWidth * 2) {
+                this._img3.x = -this._imgWidth - this._scrollSpeed;
+            }
+        };
+        // Manual scroll
+        Parallax.prototype.scroll = function (scrollSpeed) {
+            this._scrollSpeed = scrollSpeed;
+            this._scrollImgs();
         };
         return Parallax;
     }(createjs.Container));
