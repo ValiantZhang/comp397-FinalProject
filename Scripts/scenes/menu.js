@@ -18,40 +18,32 @@ var scenes;
         Menu.prototype.start = function () {
             // Add bg
             this._bg = new objects.Parallax(assets.getResult("bgBack"));
-            //this._bg.regX = 0;
+            this._bg.blurImg(3);
             this.addChild(this._bg);
-            // this._bg2 = new createjs.Bitmap(assets.getResult("BG"));
-            // this._bg2.regX = 0;
-            // this._bg2.x = 1590;
-            // this.addChild(this._bg2);
-            // Add blur filter
-            // this._blurFilter = new createjs.BlurFilter(5, 5, 4);
-            // this._bg.filters = [this._blurFilter];
-            // this._bounds = this._bg.getBounds();
-            // this._bg.cache(this._bounds.x, this._bounds.y, this._bounds.width, this._bounds.height);
-            // this._bg2.filters = [this._blurFilter];
-            // this._bounds = this._bg2.getBounds();
-            // this._bg2.cache(this._bounds.x, this._bounds.y, this._bounds.width, this._bounds.height);
-            // // Add menu label
-            // this._menuLabel = new objects.Label("Pipe Runner", "76px Impact", "#487FFF", config.Screen.CENTER_X, config.Screen.CENTER_Y - 150);
-            // this.addChild(this._menuLabel);
-            // // Add menu label2
-            // this._menuLabel2 = new objects.Label("Runner of Pipes", "32px Impact", "#88AFFF", config.Screen.CENTER_X, config.Screen.CENTER_Y - 90);
-            // this.addChild(this._menuLabel2);
-            // // Add play button
-            // this._playBtn = new objects.Button("Play", config.Screen.CENTER_X + 200, config.Screen.CENTER_Y + 200);
-            // this._playBtn.scaleX = 0.5;
-            // this._playBtn.scaleY = 0.5;
-            // this._playBtn.cursor = "pointer";
-            // this.addChild(this._playBtn);
-            // this._playBtn.on("click", this._playBtnClick, this);
-            // // Add instructions button
-            // this._howToPlayBtn = new objects.Button("HowToPlay", config.Screen.CENTER_X - 200, config.Screen.CENTER_Y + 200);
-            // this._howToPlayBtn.scaleX = 0.5;
-            // this._howToPlayBtn.scaleY = 0.5;
-            // this._howToPlayBtn.cursor = "pointer";
-            // this.addChild(this._howToPlayBtn);
-            // this._howToPlayBtn.on("click", this._howToPlayBtnClick, this);
+            // Add filter
+            this._dimensionFilter = new createjs.Bitmap(assets.getResult("filter"));
+            this.addChild(this._dimensionFilter);
+            // Add foreground
+            this._fg = new createjs.Bitmap(assets.getResult("bgFront"));
+            this.addChild(this._fg);
+            // Add play button
+            this._playBtn = new objects.Button("btnPlay", config.Screen.CENTER_X, config.Screen.CENTER_Y - 20);
+            this._playBtn.scaleX = 0.75;
+            this._playBtn.scaleY = 0.75;
+            this._playBtn.cursor = "pointer";
+            this.addChild(this._playBtn);
+            this._playBtn.on("click", this._playBtnClick, this);
+            // Add instructions button
+            this._howToPlayBtn = new objects.Button("btnInstruct", config.Screen.CENTER_X, config.Screen.CENTER_Y + 80);
+            this._howToPlayBtn.scaleX = 0.75;
+            this._howToPlayBtn.scaleY = 0.75;
+            this._howToPlayBtn.cursor = "pointer";
+            this.addChild(this._howToPlayBtn);
+            this._howToPlayBtn.on("click", this._howToPlayBtnClick, this);
+            this._player = new objects.Player("idle");
+            this._player.x = config.Screen.CENTER_X + 150;
+            this._player.y = config.Screen.CENTER_Y + 150;
+            this.addChild(this._player);
             // Add menu scene to global stage container
             stage.addChild(this);
         };

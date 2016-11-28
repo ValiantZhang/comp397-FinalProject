@@ -19,16 +19,25 @@ module objects {
             // Register mouseover and mouseout event listeners. 
             this.on("mouseover", this.overButton, this);
             this.on("mouseout", this.outButton, this);
+            this.on("mousedown", this.downButton, this);
         }
 
-        // Modify the bitmaps alpha value when hovering over the button
+        // Modify the bitmaps when hovering over the button
         overButton(event: createjs.MouseEvent) : void {
-            event.currentTarget.alpha = 0.9;
+            this.scaleX *= 1.1;
+            this.scaleY *= 1.1;
         }
         
-        // Modify the bitmaps alphave when mouse is not hovering
+        // Modify the bitmaps when mouse is not hovering
         outButton(event:createjs.MouseEvent) : void {
-            event.currentTarget.alpha = 1.0;
+            this.scaleX /= 1.1;
+            this.scaleY /= 1.1;
+        }
+        
+        // Modify the bitmaps alpha value when clicking down the button
+        downButton(event: createjs.MouseEvent) : void {
+            this.scaleX /= 1.15;
+            this.scaleY /= 1.15;
         }
     }
 }

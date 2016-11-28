@@ -14,7 +14,8 @@ var assetData = [
     { id: "filter", src: "../../Assets/images/dimension1-bg.png" },
     { id: "filterAlt", src: "../../Assets/images/dimension2-bg.png" },
     { id: "btnPlay", src: "../../Assets/images/btn-play.png" },
-    { id: "btnInstruct", src: "../../Assets/images/btn-how-to-play.png" }
+    { id: "btnInstruct", src: "../../Assets/images/btn-how-to-play.png" },
+    { id: "player", src: "../../Assets/images/runner.png" }
 ];
 function preload() {
     // Create a queue for assets being loaded
@@ -31,6 +32,13 @@ function init() {
     stage.enableMouseOver(20);
     createjs.Ticker.setFPS(config.Game.FPS);
     createjs.Ticker.on("tick", this.gameLoop, this);
+    var atlasData = {
+        images: [assets.getResult("player")],
+        frames: { width: 120, height: 120, count: 32, regX: 60, regY: 60, spacing: 0, margin: 0 },
+        animations: {
+            idle: 5
+        }
+    };
     // let atlasData = {
     //     "images": [
     //         /*
@@ -65,6 +73,7 @@ function init() {
     //     }, 
     // }
     // atlas = new createjs.SpriteSheet(atlasData);
+    atlas = new createjs.SpriteSheet(atlasData);
     scene = config.Scene.MENU;
     changeScene();
 }

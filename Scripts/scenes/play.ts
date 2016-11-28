@@ -1,7 +1,7 @@
 module scenes {
     export class Play extends objects.Scene {
 
-        // private _bg : createjs.Bitmap;
+         private _bg : objects.Parallax;
 
         // private _ground : createjs.Bitmap;
         // private _player : objects.Player;
@@ -22,7 +22,23 @@ module scenes {
         public start() : void {
 
             this._scrollableObjContainer = new createjs.Container();
-            // this._player = new objects.Player("player");
+            this._bg = new objects.Parallax(assets.getResult("bgBack"));
+            this._bg.blurImg(3);
+            this.addChild(this._bg);
+            
+            // Add filter
+            this._dimensionFilter = new createjs.Bitmap(assets.getResult("filter"));
+            this.addChild(this._dimensionFilter);
+            
+            // Add foreground
+            this._fg = new createjs.Bitmap(assets.getResult("bgFront"));
+            this.addChild(this._fg);
+            
+            
+            this._player = new objects.Player("idle");
+            this._player.x = config.Screen.CENTER_X - 300;
+            this._player.y = config.Screen.CENTER_Y + 150;
+            this.addChild(this._player);
 
             // this._pipes = [];
             // this._pipes.push(new objects.Pipe(config.PipeSize.SMALL, new objects.Vector2(1208, 450)));

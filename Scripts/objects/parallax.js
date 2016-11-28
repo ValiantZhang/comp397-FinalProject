@@ -17,6 +17,7 @@ var objects;
             this.addChild(this._img);
             this.addChild(this._img2);
             this._imgWidth = this._img.getBounds().width;
+            this._imgHeight = this._img.getBounds().height;
             this._scrollSpeed = 0.2;
             this._img.x = 0;
             this._img2.x = this._imgWidth;
@@ -26,6 +27,14 @@ var objects;
         };
         Parallax.prototype.setSpeed = function (scrollSpeed) {
             this._scrollSpeed = scrollSpeed;
+        };
+        Parallax.prototype.blurImg = function (blurAmount) {
+            // Add blur filter
+            this._blurFilter = new createjs.BlurFilter(blurAmount, blurAmount, 4);
+            this._img.filters = [this._blurFilter];
+            this._img.cache(this._img.x, this._img.y, this._imgWidth, this._imgHeight);
+            this._img2.filters = [this._blurFilter];
+            this._img2.cache(this._img2.x, this._img2.y, this._imgWidth, this._imgHeight);
         };
         // Scroll and recycle image
         Parallax.prototype._scrollImgs = function () {
