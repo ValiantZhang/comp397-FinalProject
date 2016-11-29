@@ -6,6 +6,9 @@ module scenes {
          private _dimensionFilter : createjs.Bitmap;
          private _dimensionFilter2 : createjs.Bitmap;
          private _normalView : boolean;
+         private _shifting : boolean;
+         private _dimensionTimer : number;
+         private _platforms1 : objects.Platform[];
 
         // private _ground : createjs.Bitmap;
         private _player : objects.Player;
@@ -24,10 +27,16 @@ module scenes {
         }
 
         public start() : void {
+            this._platforms1=[];
 
             // Set scroll trigger
-            this._scrollTrigger = 600;
+            this._scrollTrigger = 880;
+            
             this._normalView = true;
+            this._shifting = false;
+            
+            // Set slow-mo timer for dimension shift
+            this._dimensionTimer = 3;
 
             // Add bg
             this._bg = new objects.Parallax(assets.getResult("bgBack"));
@@ -45,9 +54,10 @@ module scenes {
             this.addChild(this._fg);
 
             //this._scrollableObjContainer = new createjs.Container();
+            this._buildLevel();
             
             
-            this._player = new objects.Player("idle");
+            this._player = new objects.Player(player_anim,"player");
             this._player.position.x = config.Screen.CENTER_X;
             this._player.position.y = config.Screen.CENTER_Y + 150;
             this.addChild(this._player);
@@ -70,55 +80,67 @@ module scenes {
         public update() : void {
 
             if (controls.SHIFT){
+                this._dimensionTimer = 3;
+                this._shifting = true;
                 this._dimensionShift();
                 controls.SHIFT = false;
                 this._normalView = this._normalView ? false : true;
+                this._shifting = this._normalView ? false : true;
             }
+    
+            if(!this._shifting || this._dimensionTimer < 0){
+                
+                this._dimensionTimer = this._dimensionTimer > 0 ? this._dimensionTimer : 3;
 
-            if(controls.LEFT) {
-                this._player.moveLeft();
-                if (this._checkScroll()){
-                    this._scrollBG(-1);
-                    this._player.position.x = this._scrollTrigger / 4;
+                if(controls.LEFT) {
+                    controls.RIGHT = false;
+                    this._player.moveLeft();
+                    if (this._checkScroll()){
+                        this._scrollBG(-1);
+                        this._player.position.x = this._scrollTrigger / 4;
+                    }
+                } else if(controls.RIGHT) { 
+                    controls.LEFT = false;
+                    this._player.moveRight();
+                    if (this._checkScroll()){
+                        this._scrollBG(1);
+                        this._player.position.x = this._scrollTrigger;
+                    }
                 }
-            } else if(controls.RIGHT) { 
-                this._player.moveRight();
-                if (this._checkScroll()){
-                    this._scrollBG(1);
-                    this._player.position.x = this._scrollTrigger;
+                if(controls.JUMP) {
+                    this._player.jump();
                 }
+    
+                if(!controls.RIGHT && !controls.LEFT)
+                {
+                    this._player.resetAcceleration();
+                    this._player.idle();
+                }
+                
+                this._keepAboveGround();
+    
+                // if(!this._player.getIsGrounded())
+                //     this._checkPlayerWithFloor();
+    
+                // for(let p of this._pipes ) {
+                //     if(this.checkCollision(this._player, p)) {
+                //         this._player.position.x = p.x - this._player.getBounds().width - 0.01;
+                //         this._player.setVelocity(new objects.Vector2(0,0));
+                //         this._player.resetAcceleration();
+    
+                //         this._player.isColliding = true;
+                        
+                //         console.log(p.name);
+                //     }
+                //     else {
+                //         this._player.isColliding = false;
+                //     }
+                // }
+    
+                this._player.update();
+            } else {
+                this._dimensionTimer -= 1;
             }
-            if(controls.JUMP) {
-                this._player.jump();
-            }
-
-            if(!controls.RIGHT && !controls.LEFT)
-            {
-                this._player.resetAcceleration();
-                this._player.idle();
-            }
-            
-            this._keepAboveGround();
-
-            // if(!this._player.getIsGrounded())
-            //     this._checkPlayerWithFloor();
-
-            // for(let p of this._pipes ) {
-            //     if(this.checkCollision(this._player, p)) {
-            //         this._player.position.x = p.x - this._player.getBounds().width - 0.01;
-            //         this._player.setVelocity(new objects.Vector2(0,0));
-            //         this._player.resetAcceleration();
-
-            //         this._player.isColliding = true;
-                    
-            //         console.log(p.name);
-            //     }
-            //     else {
-            //         this._player.isColliding = false;
-            //     }
-            // }
-
-            this._player.update();
         }
 
         private _onKeyDown(event: KeyboardEvent) : void {
@@ -224,6 +246,16 @@ module scenes {
             this.addChild(this._player);
             this.removeChild(this._fg);
             this.addChild(this._fg);
+        }
+        
+        private _buildLevel():void{
+            
+            var platforms1 =[[2,5],[6,4],[10,1],[14,4],[17,6]];
+             platforms1.forEach(el => {
+                var currentBlock =new objects.Platform(new objects.Vector2(tileSize*el[0]+tileSize/2,tileSize*(el[1]-1)+tileSize/2))
+                this._platforms1.push(currentBlock);
+                //this._scrollableObjContainer.addChild(currentBlock);                
+            });
         }
     }
 }

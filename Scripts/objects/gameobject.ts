@@ -37,16 +37,37 @@ module objects {
         set position(p:objects.Vector2) {
             this._position = p;
         }
+        
+        constructor(animation : createjs.SpriteSheet, objectName:string, singleImageString:string=null,w:number =0, h:number=0) {
+            if(animation != null)
+                super(animation,"idle");
+            else{
+                 let newData = {
+                    "images": [assets.getResult(singleImageString)],
+                    "frames": {width:w, height:h},
+                    "animations": {                        
+                        "idle": {"frames": [0]}
+                    }
+                }
+                var temp_anim = new createjs.SpriteSheet(newData);
 
-        constructor(imageString : string) {
+                super(temp_anim,"idle");
+            }                
+            //this._deathAnim = deathAnimString;
+            this.name = objectName;
+            this._initialize();
+            this.start();
+        }
+
+        /*constructor(imageString : string) {
             super(atlas, imageString);
 
             this._initialize(imageString);
             this.start();
-        }
+        }*/
         
-        private _initialize(imageString:string):void {
-            this.name = imageString;
+        private _initialize():void {
+           
             this.width = this.getBounds().width;
             this.height = this.getBounds().height;
             //this.regX = this.width * 0.5;

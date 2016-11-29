@@ -7,13 +7,17 @@ var stage: createjs.Stage;
 
 var spriteSheetLoader : createjs.SpriteSheetLoader;
 var atlas : createjs.SpriteSheet;
+var player_anim : createjs.SpriteSheet;
 
 var currentScene : objects.Scene;
 var scene: number;
 
+var tileSize:number=64;
+
 // Preload Assets required
 var assetData:objects.Asset[] = [
     {id: "bgBack", src: "../../Assets/images/bg-back.png"},
+    {id: "platform1_3", src: "../../Assets/images/tile_1_3.png"},
     {id: "bgFront", src: "../../Assets/images/bg-front.png"},
     {id: "filter", src: "../../Assets/images/dimension1-bg.png"},
     {id: "filterAlt", src: "../../Assets/images/dimension2-bg.png"},
@@ -38,8 +42,18 @@ function init() {
     stage.enableMouseOver(20);
     createjs.Ticker.setFPS(config.Game.FPS);
     createjs.Ticker.on("tick", this.gameLoop, this);
+    
+    let newData0 = {
+        
+        images: [ assets.getResult("player") ],
+        frames: {width:120, height:120, count:32, regX: 60, regY:60, spacing:0, margin:0},
+        animations: { 
+            idle: 5,
+            run: { frames: [ 8, 9, 10, 11, 12, 13, 14, 15], speed: 0.25 },
+        }
+    }
 
-    let atlasData = {
+    /*let atlasData = {
         
         images: [ assets.getResult("player") ],
             
@@ -49,7 +63,7 @@ function init() {
             idle: 5,
             run: { frames: [ 8, 9, 10, 11, 12, 13, 14, 15], speed: 0.5 },
         }
-    }
+    }*/
     // let atlasData = {
     //     "images": [
     //         /*
@@ -86,7 +100,8 @@ function init() {
 
     // atlas = new createjs.SpriteSheet(atlasData);
 
-    atlas = new createjs.SpriteSheet(atlasData);
+    player_anim = new createjs.SpriteSheet(newData0);
+    //atlas = new createjs.SpriteSheet(atlasData);
     scene = config.Scene.MENU;
     changeScene();
 }

@@ -14,9 +14,9 @@ var config;
     var Screen = (function () {
         function Screen() {
         }
-        Screen.WIDTH = 800;
+        Screen.WIDTH = 1100;
         Screen.HEIGHT = 640;
-        Screen.CENTER_X = 400;
+        Screen.CENTER_X = 550;
         Screen.CENTER_Y = 320;
         return Screen;
     }());
@@ -28,23 +28,5 @@ var config;
         return Game;
     }());
     config.Game = Game;
-    var PipeSize = (function () {
-        function PipeSize() {
-        }
-        PipeSize.SMALL = "pipe1";
-        PipeSize.MEDIUM = "pipe2";
-        PipeSize.LARGE = "pipe3";
-        return PipeSize;
-    }());
-    config.PipeSize = PipeSize;
-    var MarioState = (function () {
-        function MarioState() {
-        }
-        MarioState.SMALL = 0;
-        MarioState.BIG = 1;
-        MarioState.FLOWER = 2;
-        return MarioState;
-    }());
-    config.MarioState = MarioState;
 })(config || (config = {}));
 //# sourceMappingURL=config.js.map

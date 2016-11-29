@@ -61,7 +61,7 @@ module scenes {
             this.addChild(this._howToPlayBtn);
             this._howToPlayBtn.on("click", this._howToPlayBtnClick, this);
             
-            this._player = new objects.Player("idle");
+            this._player = new objects.Player(player_anim,"player");
             this._player.x = config.Screen.CENTER_X + 150;
             this._player.y = config.Screen.CENTER_Y + 150;
             this.addChild(this._player);
