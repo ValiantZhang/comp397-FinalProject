@@ -8,7 +8,7 @@ body {
 }
 
 canvas {
-   
+    cursor: url("../Assets/images/reticle-shift.png") 26 25, auto;
     border: 1px solid black;
     border-radius: 10px;
     text-align: center;

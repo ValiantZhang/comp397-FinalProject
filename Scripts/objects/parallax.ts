@@ -43,6 +43,10 @@ module objects {
             this._scrollSpeed = scrollSpeed;
         }
         
+        public getSpeed() : number {
+            return this._scrollSpeed;
+        }
+        
         public blurImg(blurAmount : number) : void {
             // Add blur filter
             this._blurFilter = new createjs.BlurFilter(blurAmount, blurAmount, 4);

@@ -62,7 +62,6 @@ module scenes {
             this._player.position.y = config.Screen.CENTER_Y + 150;
             this.addChild(this._player);
 
-
             // this._scrollableObjContainer.addChild(this._bg);
             // this._scrollableObjContainer.addChild(this._player);
             // this._scrollableObjContainer.addChild(this._ground);
@@ -80,85 +79,55 @@ module scenes {
         public update() : void {
 
             if (controls.SHIFT){
-                this._dimensionTimer = 3;
+                this._dimensionTimer = 10;
                 this._shifting = true;
                 this._dimensionShift();
                 controls.SHIFT = false;
                 this._normalView = this._normalView ? false : true;
                 this._shifting = this._normalView ? false : true;
             }
-    
-            if(!this._shifting || this._dimensionTimer < 0){
-                
-                this._dimensionTimer = this._dimensionTimer > 0 ? this._dimensionTimer : 3;
 
-                if(controls.LEFT) {
-                    controls.RIGHT = false;
-                    this._player.moveLeft();
-                    if (this._checkScroll()){
-                        this._scrollBG(-1);
-                        this._player.position.x = this._scrollTrigger / 4;
-                    }
-                } else if(controls.RIGHT) { 
-                    controls.LEFT = false;
-                    this._player.moveRight();
-                    if (this._checkScroll()){
-                        this._scrollBG(1);
-                        this._player.position.x = this._scrollTrigger;
-                    }
+            if(controls.LEFT) {
+                controls.RIGHT = false;
+                this._player.moveLeft();
+                if (this._checkScroll()){
+                    this._scrollBG(-1);
+                    this._player.position.x = this._scrollTrigger / 4;
                 }
-                if(controls.JUMP) {
-                    this._player.jump();
+            } else if(controls.RIGHT) { 
+                controls.LEFT = false;
+                this._player.moveRight();
+                if (this._checkScroll()){
+                    this._scrollBG(1);
+                    this._player.position.x = this._scrollTrigger;
                 }
-    
-                if(!controls.RIGHT && !controls.LEFT)
-                {
-                    this._player.resetAcceleration();
-                    this._player.idle();
-                }
-                
-                this._keepAboveGround();
-    
-                // if(!this._player.getIsGrounded())
-                //     this._checkPlayerWithFloor();
-    
-                // for(let p of this._pipes ) {
-                //     if(this.checkCollision(this._player, p)) {
-                //         this._player.position.x = p.x - this._player.getBounds().width - 0.01;
-                //         this._player.setVelocity(new objects.Vector2(0,0));
-                //         this._player.resetAcceleration();
-    
-                //         this._player.isColliding = true;
-                        
-                //         console.log(p.name);
-                //     }
-                //     else {
-                //         this._player.isColliding = false;
-                //     }
-                // }
-    
-                this._player.update();
-            } else {
-                this._dimensionTimer -= 1;
             }
+            if(controls.JUMP) {
+                this._player.jump();
+            }
+
+            if(!controls.RIGHT && !controls.LEFT) {
+                this._player.resetAcceleration();
+                this._player.idle();
+            }
+            
+            this._keepAboveGround();
+
+            this._player.update();
         }
 
         private _onKeyDown(event: KeyboardEvent) : void {
              switch(event.keyCode) {
                 case keys.W:
-                    console.log("W key pressed");
                     controls.UP = true;
                     break;
                 case keys.S:
-                    console.log("S key pressed");
                     controls.DOWN = true;
                     break;
                 case keys.A:
-                    console.log("A key pressed");
                     controls.LEFT = true;
                     break;
                 case keys.D:
-                    console.log("D key pressed");
                     controls.RIGHT = true;
                     break;
                 case keys.SPACE:
@@ -199,8 +168,13 @@ module scenes {
         // }
         
         private _scrollBG(speed : number) : void{
-            this._bg.scroll(speed);
-            this._fg.scroll(speed * 10);
+            if(this._normalView){
+                this._bg.scroll(speed);
+                this._fg.scroll(speed * 10);
+            } else {
+                this._bg.scroll(speed * config.Zone.alternateZone);
+                this._fg.scroll(speed * 10 * config.Zone.alternateZone);
+            }
         }
 
         private _checkScroll() : boolean {
@@ -213,7 +187,7 @@ module scenes {
                 return false;
             }
         }
-
+        
         private checkCollision(obj1 : objects.GameObject, obj2 : objects.GameObject) : boolean {
 
             if(obj2.x < obj1.x + obj1.getBounds().width &&
@@ -238,9 +212,15 @@ module scenes {
             if (this._normalView){
                 this.removeChild(this._dimensionFilter);
                 this.addChild(this._dimensionFilter2);
+                this._player.changeZone(config.Zone.alternateZone);
+                this._bg.setSpeed(this._bg.getSpeed() * config.Zone.alternateZone);
+                this._fg.setSpeed(this._fg.getSpeed() * config.Zone.alternateZone);
             } else {
                 this.removeChild(this._dimensionFilter2);
                 this.addChild(this._dimensionFilter);
+                this._player.changeZone(config.Zone.realZone);
+                this._bg.setSpeed(this._bg.getSpeed() / config.Zone.alternateZone);
+                this._fg.setSpeed(this._fg.getSpeed() / config.Zone.alternateZone);
             }
             this.removeChild(this._player);
             this.addChild(this._player);

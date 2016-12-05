@@ -34,7 +34,6 @@ module scenes {
             
             // Add bg
             this._bg = new objects.Parallax(assets.getResult("bgBack"));
-            this._bg.blurImg(3);
             this.addChild(this._bg);
 
             // Add filter
@@ -49,7 +48,6 @@ module scenes {
             this._playBtn = new objects.Button("btnPlay", config.Screen.CENTER_X, config.Screen.CENTER_Y - 20);
             this._playBtn.scaleX = 0.75;
             this._playBtn.scaleY = 0.75;
-            this._playBtn.cursor = "pointer";
             this.addChild(this._playBtn);
             this._playBtn.on("click", this._playBtnClick, this);
             
@@ -57,7 +55,6 @@ module scenes {
             this._howToPlayBtn = new objects.Button("btnInstruct", config.Screen.CENTER_X, config.Screen.CENTER_Y + 80);
             this._howToPlayBtn.scaleX = 0.75;
             this._howToPlayBtn.scaleY = 0.75;
-            this._howToPlayBtn.cursor = "pointer";
             this.addChild(this._howToPlayBtn);
             this._howToPlayBtn.on("click", this._howToPlayBtnClick, this);
             

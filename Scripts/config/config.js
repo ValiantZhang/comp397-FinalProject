@@ -28,5 +28,13 @@ var config;
         return Game;
     }());
     config.Game = Game;
+    var Zone = (function () {
+        function Zone() {
+        }
+        Zone.realZone = 1;
+        Zone.alternateZone = 0.05;
+        return Zone;
+    }());
+    config.Zone = Zone;
 })(config || (config = {}));
 //# sourceMappingURL=config.js.map

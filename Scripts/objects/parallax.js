@@ -34,6 +34,9 @@ var objects;
         Parallax.prototype.setSpeed = function (scrollSpeed) {
             this._scrollSpeed = scrollSpeed;
         };
+        Parallax.prototype.getSpeed = function () {
+            return this._scrollSpeed;
+        };
         Parallax.prototype.blurImg = function (blurAmount) {
             // Add blur filter
             this._blurFilter = new createjs.BlurFilter(blurAmount, blurAmount, 4);

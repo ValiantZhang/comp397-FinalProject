@@ -17,6 +17,11 @@ module config {
     export class Game {
         public static FPS : number = 60;
     }
+    
+    export class Zone {
+        public static realZone : number = 1;
+        public static alternateZone : number = 0.05;
+    }
 
     
 }

@@ -9,12 +9,12 @@ var objects;
         __extends(Player, _super);
         function Player(animation, objectName) {
             _super.call(this, animation, objectName);
-            this._gravity = 9.81;
+            this._gravity = 6.81;
             this._maxSpeedX = 30;
             this._jumpSpeed = 10;
             this._friction = -1;
             this._jumpTimer = 2;
-            //private _marioState : number = config.MarioState.SMALL;
+            this._zoneMultiplier = config.Zone.realZone;
             this._isStar = false;
             this._isDead = false;
             this._isGrounded = false;
@@ -30,7 +30,7 @@ var objects;
             this._jumpTimer = this._jumpTimer * 1000;
         };
         Player.prototype.update = function () {
-            console.log("speed" + this._velocity);
+            //console.log("speed" + this._velocity);
             // Acceleration \
             // Velocity
             // if(this._velocity.x > this._maxSpeedX) {
@@ -79,7 +79,7 @@ var objects;
                 this._velocity.x += this._accelerationX;
             }
             this._velocity.x *= this._friction;
-            this.position.x -= this._velocity.x;
+            this.position.x -= this._velocity.x * this._zoneMultiplier;
             if (this._velocity.y > this._gravity) {
                 this._velocity.y = this._gravity;
             }
@@ -88,7 +88,7 @@ var objects;
             }
             else {
                 this._velocity.y += this._gravity;
-                this.position.y += this._velocity.y;
+                this.position.y += this._velocity.y * this._zoneMultiplier;
             }
             // console.log("Position" + this.position);
             //+ " Vel: " + this._velocity + " Acc: " + this._accelerationX);
@@ -105,6 +105,19 @@ var objects;
         };
         Player.prototype.setIsGrounded = function (b) {
             this._isGrounded = b;
+            if (this._isGrounded) {
+                this._isJumping = false;
+            }
+        };
+        // Change the multiplier for speed depending on zone
+        Player.prototype.changeZone = function (newZone) {
+            this._zoneMultiplier = newZone;
+            if (newZone == config.Zone.alternateZone) {
+                this.gotoAndPlay("idle");
+            }
+            else {
+                this.gotoAndPlay("run");
+            }
         };
         Player.prototype.moveRight = function () {
             if (this._accelerationX < this._maxAccelerationX) {
@@ -131,14 +144,16 @@ var objects;
             this._velocity.x = 0;
         };
         Player.prototype.jump = function () {
-            this.setIsGrounded(false);
-            if (this.position.y < config.Screen.CENTER_Y - 250) {
-                this.position.y = config.Screen.CENTER_Y - 250;
-            }
-            for (var i = 0; i <= this._jumpTimer; i++) {
-                if (i < this._jumpTimer / 2) {
-                    this._velocity.y = -25;
-                    this._isJumping = true;
+            if (!this._isJumping) {
+                this.setIsGrounded(false);
+                if (this.position.y < config.Screen.CENTER_Y - 250) {
+                    this.position.y = config.Screen.CENTER_Y - 250;
+                }
+                for (var i = 0; i <= this._jumpTimer; i++) {
+                    if (i < this._jumpTimer / 2) {
+                        this._velocity.y = -70;
+                        this._isJumping = true;
+                    }
                 }
             }
         };
@@ -148,7 +163,7 @@ var objects;
             this._accelerationX = 0;
         };
         Player.prototype._setMoving = function () {
-            if (!this._isRunning) {
+            if (!this._isRunning && this._zoneMultiplier == config.Zone.realZone) {
                 this.gotoAndPlay("run");
                 this._isRunning = true;
             }

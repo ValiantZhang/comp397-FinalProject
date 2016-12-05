@@ -1,6 +1,6 @@
 module objects {
     export class Player extends objects.GameObject {
-        private _gravity : number = 9.81;
+        private _gravity : number = 6.81;
 
         private _maxSpeedX : number = 30;
         private _velocity : objects.Vector2;
@@ -9,8 +9,8 @@ module objects {
         private _jumpSpeed : number = 10;
         private _friction : number = -1;
         private _jumpTimer : number = 2;
+        private _zoneMultiplier : number = config.Zone.realZone;
 
-        //private _marioState : number = config.MarioState.SMALL;
         private _isStar : boolean = false;
         private _isDead : boolean = false;
         private _isGrounded : boolean = false;
@@ -32,7 +32,7 @@ module objects {
         }
 
         public update() : void {
-            console.log("speed" + this._velocity);
+            //console.log("speed" + this._velocity);
             // Acceleration \
             // Velocity
             // if(this._velocity.x > this._maxSpeedX) {
@@ -91,7 +91,7 @@ module objects {
             }
             
             this._velocity.x *= this._friction;
-            this.position.x -= this._velocity.x;
+            this.position.x -= this._velocity.x  * this._zoneMultiplier;
 
             if(this._velocity.y > this._gravity) {
                 this._velocity.y = this._gravity;
@@ -101,7 +101,7 @@ module objects {
                 this._velocity.y = 0;
             } else {
                 this._velocity.y += this._gravity;
-                this.position.y += this._velocity.y;
+                this.position.y += this._velocity.y  * this._zoneMultiplier;
             }
 
             
@@ -125,6 +125,19 @@ module objects {
 
         public setIsGrounded(b : boolean) : void {
             this._isGrounded = b;
+            if (this._isGrounded){
+                this._isJumping = false;
+            }
+        }
+        
+        // Change the multiplier for speed depending on zone
+        public changeZone(newZone : number) : void{
+            this._zoneMultiplier = newZone;
+            if (newZone == config.Zone.alternateZone){
+                this.gotoAndPlay("idle");
+            } else {
+                this.gotoAndPlay("run");
+            }
         }
 
         public moveRight() : void {
@@ -150,29 +163,30 @@ module objects {
             this._velocity.x = 0;
         }
         public jump() : void {
-            this.setIsGrounded(false);
-            
-            if (this.position.y < config.Screen.CENTER_Y - 250){
-                this.position.y = config.Screen.CENTER_Y - 250;
-            }
-            
-            for (var i = 0; i <= this._jumpTimer; i++){
+            if (!this._isJumping){
+                this.setIsGrounded(false);
                 
-                if (i < this._jumpTimer /2){
-                    this._velocity.y = -25;
-                    this._isJumping = true;
-                 } 
+                if (this.position.y < config.Screen.CENTER_Y - 250){
+                    this.position.y = config.Screen.CENTER_Y - 250;
+                }
+                
+                for (var i = 0; i <= this._jumpTimer; i++){
+                    
+                    if (i < this._jumpTimer / 2){
+                        this._velocity.y = -70;
+                        this._isJumping = true;
+                     } 
+                }
             }
-            
-            
         }
+        
         public idle() : void {
             this.gotoAndPlay("idle");
             this._isRunning = false;
             this._accelerationX = 0;
         }
         private _setMoving() : void{
-           if (!this._isRunning){
+           if (!this._isRunning && this._zoneMultiplier == config.Zone.realZone){
                 this.gotoAndPlay("run");
                 this._isRunning = true;
             } 
