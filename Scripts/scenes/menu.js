@@ -43,6 +43,7 @@ var scenes;
             this.addChild(this._player);
             // Add menu scene to global stage container
             stage.addChild(this);
+            window.onkeydown = this._onKeyDown;
         };
         Menu.prototype.update = function () {
             this._bg.update();
@@ -54,6 +55,14 @@ var scenes;
         Menu.prototype._howToPlayBtnClick = function (event) {
             scene = config.Scene.TUTORIAL;
             changeScene();
+        };
+        Menu.prototype._onKeyDown = function (event) {
+            switch (event.keyCode) {
+                case keys.SPACE:
+                    scene = config.Scene.GAME;
+                    changeScene();
+                    break;
+            }
         };
         return Menu;
     }(objects.Scene));

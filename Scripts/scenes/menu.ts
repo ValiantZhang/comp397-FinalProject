@@ -65,6 +65,7 @@ module scenes {
 
             // Add menu scene to global stage container
             stage.addChild(this);
+            window.onkeydown = this._onKeyDown;
         }
 
         public update() : void {
@@ -79,6 +80,15 @@ module scenes {
         private _howToPlayBtnClick(event : createjs.MouseEvent) {
             scene = config.Scene.TUTORIAL;
             changeScene();
+        }
+        
+        private _onKeyDown(event: KeyboardEvent) : void {
+             switch(event.keyCode) {
+                case keys.SPACE:
+                    scene = config.Scene.GAME;
+                    changeScene();
+                    break;
+            }
         }
     }
 }

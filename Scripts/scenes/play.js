@@ -255,7 +255,7 @@ var scenes;
                 _this._dimensionObjects.push(currentBlock);
                 _this._scrollableObjContainer.addChild(currentBlock);
             });
-            this._endArea = new objects.HugeWall(new objects.Vector2(9000, 0));
+            this._endArea = new objects.HugeWall(new objects.Vector2(9000, config.Screen.CENTER_Y));
             this._scrollableObjContainer.addChild(this._endArea);
         };
         // Populate enemies

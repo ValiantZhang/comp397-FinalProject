@@ -61,11 +61,6 @@ module scenes {
             
             // Set slow-mo timer for dimension shift
             this._dimensionTimer = 3;
-            
-            
-            this._scrollableObjContainer = new createjs.Container();
-            this._buildLevel();
-            this.addChild(this._scrollableObjContainer);
 
             // Add bg
             this._bg = new objects.Parallax(assets.getResult("bgBack2"));
@@ -81,8 +76,11 @@ module scenes {
             this._fg = new objects.Parallax(assets.getResult("bgFront"));
             this._fg.setAutoScroll(false);
             this.addChild(this._fg);
-            this.setChildIndex(this._fg, stage.getNumChildren()-1);
+            
+            // Scrollable object container
+            this._scrollableObjContainer = new createjs.Container();
 
+            this._buildLevel();
             
             this._player = new objects.Player(player_anim,"player");
             this._player.position.x = config.Screen.CENTER_X;
@@ -95,8 +93,10 @@ module scenes {
 
             // this._ground.y = 535;
             this._addEnemies(100, 100);
-
             
+            this.addChild(this._scrollableObjContainer);
+
+            this.setChildIndex(this._fg, this.getNumChildren()-1);
             window.onkeydown = this._onKeyDown;
             window.onkeyup = this._onKeyUp;
 
