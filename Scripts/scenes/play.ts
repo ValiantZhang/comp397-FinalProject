@@ -320,7 +320,7 @@ module scenes {
              });
             
             
-            this._endArea = new objects.HugeWall(new objects.Vector2(3000, 0));
+            this._endArea = new objects.HugeWall(new objects.Vector2(9000, 0));
             this._scrollableObjContainer.addChild(this._endArea); 
             
         }
