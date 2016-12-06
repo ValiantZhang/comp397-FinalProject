@@ -13,7 +13,6 @@ var objects;
             this._maxSpeedX = 30;
             this._jumpSpeed = 10;
             this._friction = -1;
-            this._jumpTimer = 2;
             this._zoneMultiplier = config.Zone.realZone;
             this._isStar = false;
             this._isDead = false;
@@ -27,47 +26,8 @@ var objects;
             this._velocity = new objects.Vector2(0, 0);
             this._accelerationX = 0;
             this._maxAccelerationX = 30;
-            this._jumpTimer = this._jumpTimer * 1000;
         };
         Player.prototype.update = function () {
-            //console.log("speed" + this._velocity);
-            // Acceleration \
-            // Velocity
-            // if(this._velocity.x > this._maxSpeedX) {
-            //     this._velocity.x = this._maxSpeedX;
-            // } else if (this._velocity.x < -this._maxSpeedX) {
-            //     this._velocity.x = -this._maxSpeedX;
-            // } else {
-            //     this._velocity.x += this._accelerationX;
-            // }
-            // if (this._velocity.y > this._gravity) {
-            //     this._velocity.y = this._gravity;
-            // }
-            // if(this._isGrounded) {
-            //     this._velocity.y = 0;
-            // } else {
-            //     this._velocity.y += this._gravity;
-            // }
-            // // Position
-            // this.position.x += this._velocity.x;
-            // this.position.y += this._velocity.y;
-            // if(this._isGrounded) {
-            //     this._friction = 0.75;
-            //     this._velocity.y = 0;
-            // }
-            // else {
-            //     this._friction = 0;
-            // }
-            // // // AccelerationX affects Velocity.x
-            // // // Gravity affects Velocity.y
-            // // // MaxSpeed caps Velocity.x
-            // // if(Math.abs(this._velocity.x) < this._maxSpeedX) {
-            // //     this._velocity.x += this._accelerationX;
-            // // }
-            // this._velocity.x *= this._friction;
-            // this.position.x += this._velocity.x;
-            // this.position.y += this._velocity.y + this._gravity;
-            // THIS STUFF
             // Apply acceleration and friction to velocity
             if (this._velocity.x > this._maxSpeedX) {
                 this._velocity.x = this._maxSpeedX;
@@ -90,8 +50,6 @@ var objects;
                 this._velocity.y += this._gravity;
                 this.position.y += this._velocity.y * this._zoneMultiplier;
             }
-            // console.log("Position" + this.position);
-            //+ " Vel: " + this._velocity + " Acc: " + this._accelerationX);
             _super.prototype.update.call(this);
         };
         Player.prototype.getVelocity = function () {
@@ -144,17 +102,22 @@ var objects;
             this._velocity.x = 0;
         };
         Player.prototype.jump = function () {
+            //console.log("jump velocity : "+this._velocity.y);
+            this.position.y = this.position.y - 1;
             if (!this._isJumping) {
-                this.setIsGrounded(false);
+                // Clamp jump at screen height
                 if (this.position.y < config.Screen.CENTER_Y - 250) {
                     this.position.y = config.Screen.CENTER_Y - 250;
                 }
-                for (var i = 0; i <= this._jumpTimer; i++) {
-                    if (i < this._jumpTimer / 2) {
-                        this._velocity.y = -70;
-                        this._isJumping = true;
-                    }
+                // Set jump velocity based on dimension
+                if (this._zoneMultiplier == config.Zone.alternateZone) {
+                    this._velocity.y = -70 / this._zoneMultiplier / 5;
                 }
+                else {
+                    this._velocity.y = -70 / this._zoneMultiplier;
+                }
+                this._isJumping = true;
+                this.setIsGrounded(false);
             }
         };
         Player.prototype.idle = function () {

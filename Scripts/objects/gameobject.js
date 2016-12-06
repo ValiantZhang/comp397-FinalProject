@@ -7,24 +7,28 @@ var objects;
 (function (objects) {
     var GameObject = (function (_super) {
         __extends(GameObject, _super);
-        function GameObject(animation, objectName, singleImageString, w, h) {
+        function GameObject(animation, objectName, singleImageString, w, h, dimImageString) {
             if (singleImageString === void 0) { singleImageString = null; }
             if (w === void 0) { w = 0; }
             if (h === void 0) { h = 0; }
+            if (dimImageString === void 0) { dimImageString = null; }
             if (animation != null)
                 _super.call(this, animation, "idle");
             else {
                 var newData = {
-                    "images": [assets.getResult(singleImageString)],
-                    "frames": { width: w, height: h },
+                    "images": [assets.getResult(singleImageString), assets.getResult(dimImageString)],
+                    "frames": [
+                        [0, 0, w, h, 0, w / 2, h / 2],
+                        [0, 0, w, h, 1, w / 2, h / 2]
+                    ],
                     "animations": {
-                        "idle": { "frames": [0] }
+                        "idle": 0,
+                        "alt": 1
                     }
                 };
                 var temp_anim = new createjs.SpriteSheet(newData);
                 _super.call(this, temp_anim, "idle");
             }
-            //this._deathAnim = deathAnimString;
             this.name = objectName;
             this._initialize();
             this.start();
@@ -70,17 +74,37 @@ var objects;
             enumerable: true,
             configurable: true
         });
-        /*constructor(imageString : string) {
-            super(atlas, imageString);
-
-            this._initialize(imageString);
-            this.start();
-        }*/
+        Object.defineProperty(GameObject.prototype, "leftSide", {
+            get: function () {
+                return this._position.x - this._width / 2;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(GameObject.prototype, "rightSide", {
+            get: function () {
+                return this._position.x + this._width / 2;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(GameObject.prototype, "topSide", {
+            get: function () {
+                return this._position.y - this._height / 2;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(GameObject.prototype, "botSide", {
+            get: function () {
+                return this._position.y + this._height / 2;
+            },
+            enumerable: true,
+            configurable: true
+        });
         GameObject.prototype._initialize = function () {
-            this.width = this.getBounds().width;
-            this.height = this.getBounds().height;
-            //this.regX = this.width * 0.5;
-            //this.regY = this.height * 0.5;
+            this._width = this.getBounds().width;
+            this._height = this.getBounds().height;
             this.position = new objects.Vector2(this.x, this.y);
         };
         GameObject.prototype.start = function () { };

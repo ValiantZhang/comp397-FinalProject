@@ -9,9 +9,15 @@
 /// <reference path="../objects/player.ts" />
 /// <reference path="../objects/enemy.ts" />
 /// <reference path="../objects/gameobject.ts" />
+/// <reference path="../objects/dimensionObject.ts" />
 /// <reference path="../objects/vector2.ts" />
 /// <reference path="../objects/platform.ts" />
+/// <reference path="../objects/spike.ts"/>
+/// <reference path="../objects/hugeWall.ts"/>
+/// <reference path="../objects/enemySpawner.ts"/>
 /// <reference path="../util/physicsManager.ts" />
 /// <reference path="../scenes/menu.ts" />
-/// <reference path="../scenes/play.ts" /> 
+/// <reference path="../scenes/tutorial.ts" />
+/// <reference path="../scenes/play.ts" />
+/// <reference path="../scenes/level2.ts" /> 
 //# sourceMappingURL=_reference.js.map

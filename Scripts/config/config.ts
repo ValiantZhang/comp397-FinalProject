@@ -5,6 +5,9 @@ module config {
     export class Scene {
         public static MENU : number = 0;
         public static GAME : number = 1;
+        public static LEVEL2 : number = 2;
+        public static LEVEL3 : number = 3;
+        public static TUTORIAL : number = 4;
     }
 
     export class Screen {
@@ -21,6 +24,11 @@ module config {
     export class Zone {
         public static realZone : number = 1;
         public static alternateZone : number = 0.05;
+    }
+    
+    export class Dimension {
+        public static firstDimension : number = 0;
+        public static secondDimension : number = 1;
     }
 
     

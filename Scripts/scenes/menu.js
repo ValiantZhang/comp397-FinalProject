@@ -52,7 +52,7 @@ var scenes;
             changeScene();
         };
         Menu.prototype._howToPlayBtnClick = function (event) {
-            //scene = config.Scene.INSTRUCTIONS;
+            scene = config.Scene.TUTORIAL;
             changeScene();
         };
         return Menu;

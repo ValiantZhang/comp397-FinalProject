@@ -6,18 +6,27 @@ var stage;
 var spriteSheetLoader;
 var atlas;
 var player_anim;
+var enemy1_anim;
+var dimension = config.Dimension.firstDimension;
 var currentScene;
 var scene;
-var tileSize = 64;
+var playerPosition;
+var tileSize = 128;
 // Preload Assets required
 var assetData = [
     { id: "bgBack", src: "../../Assets/images/bg-back.png" },
+    { id: "bgTut", src: "../../Assets/images/tutorial.png" },
     { id: "platform1_3", src: "../../Assets/images/tile_1_3.png" },
+    { id: "platform1_3_alt", src: "../../Assets/images/tile_1_3_alt.png" },
     { id: "bgFront", src: "../../Assets/images/bg-front.png" },
     { id: "filter", src: "../../Assets/images/dimension1-bg.png" },
     { id: "filterAlt", src: "../../Assets/images/dimension2-bg.png" },
     { id: "btnPlay", src: "../../Assets/images/btn-play.png" },
     { id: "btnInstruct", src: "../../Assets/images/btn-how-to-play.png" },
+    { id: "enemy1", src: "../../Assets/images/enemy1_ss_64x135.png" },
+    { id: "spike", src: "../../Assets/images/Spike.png" },
+    { id: "b_spike", src: "../../Assets/images/Spike_black.png" },
+    { id: "invisibleWall", src: "../../Assets/images/invisibleWall_2x500.png" },
     { id: "player", src: "../../Assets/images/runner.png" }
 ];
 function preload() {
@@ -41,6 +50,13 @@ function init() {
         animations: {
             idle: 5,
             run: { frames: [8, 9, 10, 11, 12, 13, 14, 15], speed: 0.25 },
+        }
+    };
+    var newData1 = {
+        "images": [assets.getResult("enemy1")],
+        "frames": { width: 64, height: 135 },
+        "animations": {
+            "idle": { "frames": [0, 1, 2, 3], "speed": 0.2, next: true }
         }
     };
     /*let atlasData = {
@@ -89,6 +105,7 @@ function init() {
     // }
     // atlas = new createjs.SpriteSheet(atlasData);
     player_anim = new createjs.SpriteSheet(newData0);
+    enemy1_anim = new createjs.SpriteSheet(newData1);
     //atlas = new createjs.SpriteSheet(atlasData);
     scene = config.Scene.MENU;
     changeScene();
@@ -111,6 +128,16 @@ function changeScene() {
             stage.removeAllChildren();
             currentScene = new scenes.Play();
             console.log("Starting PLAY scene");
+            break;
+        case config.Scene.LEVEL2:
+            stage.removeAllChildren();
+            currentScene = new scenes.Level2();
+            console.log("Starting LEVEL 2 scene");
+            break;
+        case config.Scene.TUTORIAL:
+            stage.removeAllChildren();
+            currentScene = new scenes.Tutorial();
+            console.log("Starting Tutorial scene");
             break;
     }
 }

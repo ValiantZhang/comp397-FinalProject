@@ -33,49 +33,59 @@ module objects {
         get position() : objects.Vector2 {
             return this._position
         }
+        
+        get leftSide() : number {
+            return this._position.x - this._width / 2;
+        }
+        
+        get rightSide() : number {
+            return this._position.x + this._width / 2;
+        }
+        
+        get topSide() : number {
+            return this._position.y - this._height / 2;
+        }
+        
+        get botSide() : number {
+            return this._position.y + this._height / 2;
+        }
 
         set position(p:objects.Vector2) {
             this._position = p;
         }
         
-        constructor(animation : createjs.SpriteSheet, objectName:string, singleImageString:string=null,w:number =0, h:number=0) {
+        constructor(animation : createjs.SpriteSheet, objectName:string, singleImageString:string=null,w:number =0, h:number=0,  dimImageString:string=null) {
             if(animation != null)
                 super(animation,"idle");
             else{
-                 let newData = {
-                    "images": [assets.getResult(singleImageString)],
-                    "frames": {width:w, height:h},
+                let newData = {
+                    "images": [assets.getResult(singleImageString), assets.getResult(dimImageString)],
+                    "frames": [
+                        [0, 0, w, h, 0, w/2, h/2],
+                        [0, 0, w, h, 1, w/2, h/2]
+                    ],
                     "animations": {                        
-                        "idle": {"frames": [0]}
+                        "idle": 0,
+                        "alt": 1
                     }
                 }
                 var temp_anim = new createjs.SpriteSheet(newData);
 
                 super(temp_anim,"idle");
             }                
-            //this._deathAnim = deathAnimString;
             this.name = objectName;
             this._initialize();
             this.start();
         }
-
-        /*constructor(imageString : string) {
-            super(atlas, imageString);
-
-            this._initialize(imageString);
-            this.start();
-        }*/
         
         private _initialize():void {
-           
-            this.width = this.getBounds().width;
-            this.height = this.getBounds().height;
-            //this.regX = this.width * 0.5;
-            //this.regY = this.height * 0.5;
+            this._width = this.getBounds().width;
+            this._height = this.getBounds().height;
             this.position = new Vector2(this.x, this.y);
         }
 
         public start():void {}
+        
         public update():void {
             this.x = this.position.x;
             this.y = this.position.y;

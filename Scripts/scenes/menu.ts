@@ -77,7 +77,7 @@ module scenes {
         }
         
         private _howToPlayBtnClick(event : createjs.MouseEvent) {
-            //scene = config.Scene.INSTRUCTIONS;
+            scene = config.Scene.TUTORIAL;
             changeScene();
         }
     }
