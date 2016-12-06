@@ -226,7 +226,7 @@ var scenes;
         // Populate level
         Play.prototype._buildLevel = function () {
             var _this = this;
-            var platforms1 = [[10, 5], [12, 4], [16, 4], [18, 1], [22, 1], [24, 2], [26, 3], [29.25, 4], [34.75, 4]];
+            var platforms1 = [[10, 5], [12, 4], [16, 4], [18, 1], [22, 1], [24, 2], [26, 3], [29.6, 4], [34.4, 4]];
             platforms1.forEach(function (el) {
                 var currentBlock = new objects.Platform(new objects.Vector2(tileSize * el[0] + tileSize / 2, 100 + tileSize / 2 * (el[1] - 1) + tileSize / 2));
                 _this._platforms1.push(currentBlock);
@@ -254,8 +254,8 @@ var scenes;
                 _this._dimensionObjects.push(currentBlock);
                 _this._scrollableObjContainer.addChild(currentBlock);
             });
-            //this._endArea = new objects.HugeWall(new objects.Vector2(500,500));
-            //this._scrollableObjContainer.addChild(this._endArea); 
+            this._endArea = new objects.HugeWall(new objects.Vector2(3000, 0));
+            this._scrollableObjContainer.addChild(this._endArea);
         };
         // Populate enemies
         Play.prototype._addEnemies = function (x, y) {
@@ -298,7 +298,7 @@ var scenes;
         };
         // Move to new level
         Play.prototype._switchLevel = function () {
-            if (this._player.position.x > 800) {
+            if (this._checkCollision(this._player, this._endArea)) {
                 stage.removeAllChildren();
                 scene = config.Scene.LEVEL2;
                 changeScene();

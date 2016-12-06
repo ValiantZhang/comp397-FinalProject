@@ -8,7 +8,9 @@ var objects;
     var HugeWall = (function (_super) {
         __extends(HugeWall, _super);
         function HugeWall(defaultPosition) {
-            _super.call(this, "invisibleWall", config.Dimension.firstDimension, "invisible", "invisible", defaultPosition.x, defaultPosition.y);
+            _super.call(this, "invisibleWall", config.Dimension.firstDimension, "invisibleWall", "invisibleWall", 500, 640);
+            this.x = this.position.x = defaultPosition.x;
+            this.y = this.position.y = defaultPosition.y;
         }
         return HugeWall;
     }(objects.DimensionObject));
