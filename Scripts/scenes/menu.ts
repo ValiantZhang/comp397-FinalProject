@@ -12,7 +12,7 @@ module scenes {
         private _dimensionFilter : createjs.Bitmap;
         private _fg : createjs.Bitmap;
         
-        private _menuLabel : objects.Label;
+        private _menuLabel : createjs.Bitmap;
         private _menuLabel2 : objects.Label;
             
         // Button 
@@ -50,6 +50,11 @@ module scenes {
             this._playBtn.scaleY = 0.75;
             this.addChild(this._playBtn);
             this._playBtn.on("click", this._playBtnClick, this);
+            
+            //Add label
+            this._menuLabel = new createjs.Bitmap(assets.getResult("title"));
+            this.addChild(this._menuLabel);
+            
             
             // Add instructions button
             this._howToPlayBtn = new objects.Button("btnInstruct", config.Screen.CENTER_X, config.Screen.CENTER_Y + 80);

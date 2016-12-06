@@ -213,6 +213,7 @@ var scenes;
                 this._player.changeZone(config.Zone.realZone);
                 this._bg.setSpeed(this._bg.getSpeed() / config.Zone.alternateZone);
                 this._fg.setSpeed(this._fg.getSpeed() / config.Zone.alternateZone);
+                controls.JUMP = false;
                 dimension = config.Dimension.firstDimension;
             }
             this.removeChild(this._scrollableObjContainer);
@@ -229,7 +230,7 @@ var scenes;
             var _this = this;
             var platforms1 = [[10, 5], [12, 4], [16, 4], [18, 1], [22, 1], [24, 2], [26, 3], [29.6, 4], [34.4, 4]];
             platforms1.forEach(function (el) {
-                var currentBlock = new objects.Platform(new objects.Vector2(tileSize * el[0] + tileSize / 2, 100 + tileSize / 2 * (el[1] - 1) + tileSize / 2));
+                var currentBlock = new objects.Platform("platform1_3", new objects.Vector2(tileSize * el[0] + tileSize / 2, 100 + tileSize / 2 * (el[1] - 1) + tileSize / 2));
                 _this._platforms1.push(currentBlock);
                 _this._dimensionObjects.push(currentBlock);
                 _this._scrollableObjContainer.addChild(currentBlock);
@@ -255,7 +256,7 @@ var scenes;
                 _this._dimensionObjects.push(currentBlock);
                 _this._scrollableObjContainer.addChild(currentBlock);
             });
-            this._endArea = new objects.HugeWall(new objects.Vector2(9000, config.Screen.CENTER_Y));
+            this._endArea = new objects.HugeWall(new objects.Vector2(-500, config.Screen.CENTER_Y));
             this._scrollableObjContainer.addChild(this._endArea);
         };
         // Populate enemies

@@ -58,12 +58,14 @@ var objects;
         // }
         Enemy.prototype.overButton = function (event) {
             if (dimension == config.Dimension.secondDimension) {
-                event.currentTarget.alpha = 0.5;
+                this.scaleX = 1.2;
+                this.scaleY = 1.2;
             }
         };
         Enemy.prototype.outButton = function (event) {
             if (dimension == config.Dimension.secondDimension) {
-                event.currentTarget.alpha = 1.0;
+                this.scaleX = 1;
+                this.scaleY = 1;
             }
         };
         Enemy.prototype.destroy = function (event) {

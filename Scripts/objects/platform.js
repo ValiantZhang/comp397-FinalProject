@@ -7,8 +7,8 @@ var objects;
 (function (objects) {
     var Platform = (function (_super) {
         __extends(Platform, _super);
-        function Platform(defaultPosition) {
-            _super.call(this, "platform1", config.Dimension.firstDimension, "platform1_3", "platform1_3_alt", 192, 47);
+        function Platform(animation, defaultPosition) {
+            _super.call(this, animation, config.Dimension.firstDimension, animation, "platform1_3_alt", 192, 47);
             this.x = this.position.x = defaultPosition.x;
             this.y = this.position.y = defaultPosition.y;
         }

@@ -112,9 +112,8 @@ module objects {
         }
         
         public jump() : void {
-            //console.log("jump velocity : "+this._velocity.y);
-            this.position.y = this.position.y - 1;
             if (!this._isJumping){
+                this.position.y = this.position.y - 1;
                 
                 // Clamp jump at screen height
                 if (this.position.y < config.Screen.CENTER_Y - 250){

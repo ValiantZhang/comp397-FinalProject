@@ -25,6 +25,7 @@ var assetData:objects.Asset[] = [
     {id: "bgTut", src: "../../Assets/images/tutorial.png"},
     {id: "platform1_3", src: "../../Assets/images/tile_1_3.png"},
     {id: "platform1_3_alt", src: "../../Assets/images/tile_1_3_alt.png"},
+    {id: "platformVines", src: "../../Assets/images/tile_1_3_vine.png"},
     {id: "bgFront", src: "../../Assets/images/bg-front.png"},
     {id: "filter", src: "../../Assets/images/dimension1-bg.png"},
     {id: "filterLvl2", src: "../../Assets/images/dimension3-bg.png"},
@@ -36,6 +37,7 @@ var assetData:objects.Asset[] = [
     {id: "spike", src: "../../Assets/images/Spike.png"},
     {id: "b_spike", src: "../../Assets/images/Spike.png"},
     {id: "invisibleWall", src: "../../Assets/images/invisibleWall_2x500.png"},
+    {id: "title", src: "../../Assets/images/title.png"},
     {id: "player", src: "../../Assets/images/runner.png"}
 ];
 

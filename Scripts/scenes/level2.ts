@@ -92,7 +92,6 @@ module scenes {
             //this._scrollableObjContainer.addChild(this._ground);
 
             // this._ground.y = 535;
-            this._addEnemies(100, 100);
             
             this.addChild(this._scrollableObjContainer);
 
@@ -287,29 +286,29 @@ module scenes {
         // Populate level
         private _buildLevel():void{
             
-            var platforms1 =[[10,5],[10,10],[16,4],[18,1],[22,1],[24,2],[26,3],[29.6,4],[34.4,4]];
+            var platforms1 =[[10,7],[10,10],[16,4],[18,1],[22,1],[24,2],[26,3],[29.6,4],[34.4,4]];
             platforms1.forEach(el => {
-                var currentBlock = new objects.Platform(new objects.Vector2(tileSize*el[0]+tileSize/2,100+tileSize/2*(el[1]-1)+tileSize/2))
+                var currentBlock = new objects.Platform("platformVines", new objects.Vector2(tileSize*el[0]+tileSize/2,100+tileSize/2*(el[1]-1)+tileSize/2))
                 this._platforms1.push(currentBlock);
                 this._dimensionObjects.push(currentBlock);
                 this._scrollableObjContainer.addChild(currentBlock);                
             });
             
-            var spikes1 =[13,15,17,19,20,21,30,31,32,33,34];
-            spikes1.forEach(el => {
-                var currentBlock =new objects.Spike(tileSize*el+tileSize/2);
-                this._spikes1.push(currentBlock);
-                this._dimensionObjects.push(currentBlock);
-                this._scrollableObjContainer.addChild(currentBlock);                
-            });
+            // var spikes1 =[13,15,17,19,20,21,30,31,32,33,34];
+            // spikes1.forEach(el => {
+            //     var currentBlock =new objects.Spike(tileSize*el+tileSize/2);
+            //     this._spikes1.push(currentBlock);
+            //     this._dimensionObjects.push(currentBlock);
+            //     this._scrollableObjContainer.addChild(currentBlock);                
+            // });
             
-            var movingSpikes1 =[8,39,40,41,43,44,46,48,49,50];
-            movingSpikes1.forEach(el => {
-                var currentBlock =new objects.Spike(tileSize*el+tileSize/2, true, "b_spike");
-                this._movingSpikes1.push(currentBlock);
-                this._dimensionObjects.push(currentBlock);
-                this._scrollableObjContainer.addChild(currentBlock);                
-            });
+            // var movingSpikes1 =[8,39,40,41,43,44,46,48,49,50];
+            // movingSpikes1.forEach(el => {
+            //     var currentBlock =new objects.Spike(tileSize*el+tileSize/2, true, "b_spike");
+            //     this._movingSpikes1.push(currentBlock);
+            //     this._dimensionObjects.push(currentBlock);
+            //     this._scrollableObjContainer.addChild(currentBlock);                
+            // });
             
              var enemySpawners =[45,47];
              enemySpawners.forEach(el => {

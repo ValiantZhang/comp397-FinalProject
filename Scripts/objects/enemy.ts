@@ -85,13 +85,15 @@ module objects {
         
         overButton(event: createjs.MouseEvent) : void {
             if (dimension == config.Dimension.secondDimension){
-                event.currentTarget.alpha = 0.5;
+                this.scaleX = 1.2;
+                this.scaleY = 1.2;
             }
         }
         
         outButton(event:createjs.MouseEvent) : void {
             if (dimension == config.Dimension.secondDimension){
-                event.currentTarget.alpha = 1.0;
+                this.scaleX = 1;
+                this.scaleY = 1;
             }
         }
         
