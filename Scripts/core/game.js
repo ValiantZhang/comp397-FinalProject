@@ -15,17 +15,20 @@ var tileSize = 128;
 // Preload Assets required
 var assetData = [
     { id: "bgBack", src: "../../Assets/images/bg-back.png" },
+    { id: "bgBack2", src: "../../Assets/images/bg-back2.png" },
     { id: "bgTut", src: "../../Assets/images/tutorial.png" },
     { id: "platform1_3", src: "../../Assets/images/tile_1_3.png" },
     { id: "platform1_3_alt", src: "../../Assets/images/tile_1_3_alt.png" },
     { id: "bgFront", src: "../../Assets/images/bg-front.png" },
     { id: "filter", src: "../../Assets/images/dimension1-bg.png" },
+    { id: "filterLvl2", src: "../../Assets/images/dimension3-bg.png" },
     { id: "filterAlt", src: "../../Assets/images/dimension2-bg.png" },
     { id: "btnPlay", src: "../../Assets/images/btn-play.png" },
     { id: "btnInstruct", src: "../../Assets/images/btn-how-to-play.png" },
     { id: "enemy1", src: "../../Assets/images/enemy1_ss_64x135.png" },
+    { id: "enemyHover", src: "../../Assets/images/enemy1_red_64x135.png" },
     { id: "spike", src: "../../Assets/images/Spike.png" },
-    { id: "b_spike", src: "../../Assets/images/Spike_black.png" },
+    { id: "b_spike", src: "../../Assets/images/Spike.png" },
     { id: "invisibleWall", src: "../../Assets/images/invisibleWall_2x500.png" },
     { id: "player", src: "../../Assets/images/runner.png" }
 ];

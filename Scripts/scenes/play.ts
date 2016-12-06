@@ -72,15 +72,15 @@ module scenes {
             this.addChild(this._dimensionFilter);
             this._dimensionFilter2 = new createjs.Bitmap(assets.getResult("filterAlt"));
             
+            // Scrollable object container
+            this._scrollableObjContainer = new createjs.Container();
+            
+            this._buildLevel();
+            
             // Add foreground
             this._fg = new objects.Parallax(assets.getResult("bgFront"));
             this._fg.setAutoScroll(false);
             this.addChild(this._fg);
-            
-            // Scrollable object container
-            this._scrollableObjContainer = new createjs.Container();
-
-            this._buildLevel();
             
             this._player = new objects.Player(player_anim,"player");
             this._player.position.x = config.Screen.CENTER_X;
@@ -96,7 +96,7 @@ module scenes {
             
             this.addChild(this._scrollableObjContainer);
 
-            
+            this.setChildIndex(this._fg, this.getNumChildren()-1);
             window.onkeydown = this._onKeyDown;
             window.onkeyup = this._onKeyUp;
 

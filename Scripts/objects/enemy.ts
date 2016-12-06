@@ -72,10 +72,10 @@ module objects {
         
         checkDimension() : void {
             if (dimension == config.Dimension.secondDimension){
-                this.visible = true;
+                this.alpha = 1.0;
             }
             else{
-                this.visible = false;
+                this.alpha = 0.1;
             }
         }
 
@@ -96,12 +96,10 @@ module objects {
         }
         
         destroy(event:createjs.MouseEvent) : void{
-            // console.log(currentScene);
-            // this.filters = [
-            //     new createjs.ColorFilter(122,122,0,1, 0,0,122,0)
-            // ];
-            this.parent.removeChild(this);
-            currentScene.update();
+            if (dimension == config.Dimension.secondDimension){
+                this.parent.removeChild(this);
+                currentScene.update();
+            }
         }
         
     }

@@ -47,10 +47,10 @@ var objects;
         };
         Enemy.prototype.checkDimension = function () {
             if (dimension == config.Dimension.secondDimension) {
-                this.visible = true;
+                this.alpha = 1.0;
             }
             else {
-                this.visible = false;
+                this.alpha = 0.1;
             }
         };
         // private _dead() : void {
@@ -67,12 +67,10 @@ var objects;
             }
         };
         Enemy.prototype.destroy = function (event) {
-            // console.log(currentScene);
-            // this.filters = [
-            //     new createjs.ColorFilter(122,122,0,1, 0,0,122,0)
-            // ];
-            this.parent.removeChild(this);
-            currentScene.update();
+            if (dimension == config.Dimension.secondDimension) {
+                this.parent.removeChild(this);
+                currentScene.update();
+            }
         };
         return Enemy;
     }(objects.GameObject));
