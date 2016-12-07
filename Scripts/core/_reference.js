@@ -14,6 +14,7 @@
 /// <reference path="../objects/platform.ts" />
 /// <reference path="../objects/spike.ts"/>
 /// <reference path="../objects/hugeWall.ts"/>
+/// <reference path="../objects/enemyObstacle.ts"/>
 /// <reference path="../objects/enemySpawner.ts"/>
 /// <reference path="../util/physicsManager.ts" />
 /// <reference path="../scenes/menu.ts" />

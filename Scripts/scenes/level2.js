@@ -21,6 +21,7 @@ var scenes;
             this._platforms1 = [];
             this._spikes1 = [];
             this._movingSpikes1 = [];
+            this._enemyObstacles = [];
             this._enemies = [];
             this._enemySpawners = [];
             this._dimensionObjects = [];
@@ -99,18 +100,26 @@ var scenes;
                 var o = _a[_i];
                 o.update();
             }
-            for (var _b = 0, _c = this._enemies; _b < _c.length; _b++) {
-                var enemy = _c[_b];
-                enemy.update();
-            }
-            for (var _d = 0, _e = this._spikes1; _d < _e.length; _d++) {
-                var spike = _e[_d];
+            // for(let enemy of this._enemies ) {
+            //     enemy.update();
+            //     if (this._checkCollision(this._player, enemy)){
+            //         enemy.endGame();
+            //     }
+            // }
+            // for(let enemyOb of this._enemyObstacles ) {
+            //     enemyOb.update();
+            //     if (this._checkCollision(this._player, enemyOb)){
+            //         enemyOb.endGame();
+            //     }
+            // }
+            for (var _b = 0, _c = this._spikes1; _b < _c.length; _b++) {
+                var spike = _c[_b];
                 if (this._checkCollision(this._player, spike)) {
                     spike.endGame();
                 }
             }
-            for (var _f = 0, _g = this._movingSpikes1; _f < _g.length; _f++) {
-                var spike = _g[_f];
+            for (var _d = 0, _e = this._movingSpikes1; _d < _e.length; _d++) {
+                var spike = _e[_d];
                 if (this._checkCollision(this._player, spike)) {
                     spike.endGame();
                 }
@@ -226,27 +235,34 @@ var scenes;
         // Populate level
         Level2.prototype._buildLevel = function () {
             var _this = this;
-            var platforms1 = [[10, 7], [10, 10], [16, 4], [18, 1], [22, 1], [24, 2], [26, 3], [29.6, 4], [34.4, 4]];
+            var platforms1 = [[8, 6], [9, 5], [9, 5.5], [10, 6], [12.5, 0], [14, 2], [16, 5], [19, 4], [20, 2], [23, 0], [23, 2], [28, 5.5], [30, 4], [34, 0], [33, 6], [33.5, 5.5], [34, 5], [34.5, 5.5], [35, 5], [35.5, 5.5], [36, 6]];
             platforms1.forEach(function (el) {
                 var currentBlock = new objects.Platform("platformVines", new objects.Vector2(tileSize * el[0] + tileSize / 2, 100 + tileSize / 2 * (el[1] - 1) + tileSize / 2));
                 _this._platforms1.push(currentBlock);
                 _this._dimensionObjects.push(currentBlock);
                 _this._scrollableObjContainer.addChild(currentBlock);
             });
-            // var spikes1 =[13,15,17,19,20,21,30,31,32,33,34];
-            // spikes1.forEach(el => {
-            //     var currentBlock =new objects.Spike(tileSize*el+tileSize/2);
-            //     this._spikes1.push(currentBlock);
-            //     this._dimensionObjects.push(currentBlock);
-            //     this._scrollableObjContainer.addChild(currentBlock);                
-            // });
-            // var movingSpikes1 =[8,39,40,41,43,44,46,48,49,50];
-            // movingSpikes1.forEach(el => {
-            //     var currentBlock =new objects.Spike(tileSize*el+tileSize/2, true, "b_spike");
-            //     this._movingSpikes1.push(currentBlock);
-            //     this._dimensionObjects.push(currentBlock);
-            //     this._scrollableObjContainer.addChild(currentBlock);                
-            // });
+            var enemyObstacles1 = [[13.5, 5.5], [35.5, 8]];
+            enemyObstacles1.forEach(function (el) {
+                var currentBlock = new objects.EnemyObstacle(new objects.Vector2(tileSize * el[0] + tileSize / 2, 100 + tileSize / 2 * (el[1] - 1) + tileSize / 2));
+                _this._enemyObstacles.push(currentBlock);
+                _this._dimensionObjects.push(currentBlock);
+                _this._scrollableObjContainer.addChild(currentBlock);
+            });
+            var spikes1 = [23, 24, 25, 26.5];
+            spikes1.forEach(function (el) {
+                var currentBlock = new objects.Spike(tileSize * el + tileSize / 2);
+                _this._spikes1.push(currentBlock);
+                _this._dimensionObjects.push(currentBlock);
+                _this._scrollableObjContainer.addChild(currentBlock);
+            });
+            var movingSpikes1 = [16, 28];
+            movingSpikes1.forEach(function (el) {
+                var currentBlock = new objects.Spike(tileSize * el + tileSize / 2, true, "b_spike");
+                _this._movingSpikes1.push(currentBlock);
+                _this._dimensionObjects.push(currentBlock);
+                _this._scrollableObjContainer.addChild(currentBlock);
+            });
             var enemySpawners = [45, 47];
             enemySpawners.forEach(function (el) {
                 var currentBlock = new objects.EnemySpawner(tileSize * el + tileSize / 2);
@@ -254,7 +270,7 @@ var scenes;
                 _this._dimensionObjects.push(currentBlock);
                 _this._scrollableObjContainer.addChild(currentBlock);
             });
-            this._endArea = new objects.HugeWall(new objects.Vector2(3000, 0));
+            this._endArea = new objects.HugeWall(new objects.Vector2(9000, 0));
             this._scrollableObjContainer.addChild(this._endArea);
         };
         // Populate enemies

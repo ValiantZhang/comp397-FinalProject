@@ -34,6 +34,7 @@ var assetData:objects.Asset[] = [
     {id: "btnInstruct", src: "../../Assets/images/btn-how-to-play.png"},
     {id: "enemy1", src: "../../Assets/images/enemy1_ss_64x135.png"},
     {id: "enemyHover", src: "../../Assets/images/enemy1_red_64x135.png"},
+    {id: "enemyObstacle", src: "../../Assets/images/enemyObstacle.png"},
     {id: "spike", src: "../../Assets/images/Spike.png"},
     {id: "b_spike", src: "../../Assets/images/Spike.png"},
     {id: "invisibleWall", src: "../../Assets/images/invisibleWall_2x500.png"},
