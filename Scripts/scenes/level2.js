@@ -22,6 +22,7 @@ var scenes;
             this._spikes1 = [];
             this._movingSpikes1 = [];
             this._enemyObstacles = [];
+            this._invVerticalMovePlat = [];
             this._enemies = [];
             this._enemySpawners = [];
             this._dimensionObjects = [];
@@ -235,7 +236,7 @@ var scenes;
         // Populate level
         Level2.prototype._buildLevel = function () {
             var _this = this;
-            var platforms1 = [[8, 6], [9, 5], [9, 5.5], [10, 6], [12.5, 0], [14, 2], [16, 5], [19, 4], [20, 2], [23, 0], [23, 2], [28, 5.5], [30, 4], [34, 0], [33, 6], [33.5, 5.5], [34, 5], [34.5, 5.5], [35, 5], [35.5, 5.5], [36, 6]];
+            var platforms1 = [[8, 6], [9, 5], [9, 5.5], [10, 6], [12.5, 0], [14, 2], [16, 5], [19, 4], [20, 2], [23, 0], [28, 5.5], [30, 4], [34, 0], [33, 6], [33.5, 5.5], [34, 5], [34.5, 5.5], [35, 5], [35.5, 5.5], [36, 6]];
             platforms1.forEach(function (el) {
                 var currentBlock = new objects.Platform("platformVines", new objects.Vector2(tileSize * el[0] + tileSize / 2, 100 + tileSize / 2 * (el[1] - 1) + tileSize / 2));
                 _this._platforms1.push(currentBlock);
@@ -246,6 +247,13 @@ var scenes;
             enemyObstacles1.forEach(function (el) {
                 var currentBlock = new objects.EnemyObstacle(new objects.Vector2(tileSize * el[0] + tileSize / 2, 100 + tileSize / 2 * (el[1] - 1) + tileSize / 2));
                 _this._enemyObstacles.push(currentBlock);
+                _this._dimensionObjects.push(currentBlock);
+                _this._scrollableObjContainer.addChild(currentBlock);
+            });
+            var invVerticalMovePlat = [[24, 3]];
+            invVerticalMovePlat.forEach(function (el) {
+                var currentBlock = new objects.InvPlatform("platform1_3_alt", new objects.Vector2(tileSize * el[0] + tileSize / 2, 100 + tileSize / 2 * (el[1] - 1) + tileSize / 2), true, "horizontal", 3);
+                _this._invVerticalMovePlat.push(currentBlock);
                 _this._dimensionObjects.push(currentBlock);
                 _this._scrollableObjContainer.addChild(currentBlock);
             });
@@ -310,6 +318,19 @@ var scenes;
             }
             if (collisionCount == 0 && this._player.y < config.Screen.CENTER_Y + 130) {
                 this._player.setIsGrounded(false);
+            }
+            if (dimension == config.Dimension.secondDimension) {
+                for (var _b = 0, _c = this._invVerticalMovePlat; _b < _c.length; _b++) {
+                    var a = _c[_b];
+                    // Check for collision
+                    if (this._checkCollision(this._player, a)) {
+                        collisionCount += 1;
+                        // Check if collision is with top of object
+                        if (this._checkTopFace(this._player, a)) {
+                            this._player.setIsGrounded(true);
+                        }
+                    }
+                }
             }
         };
         // Move to new level

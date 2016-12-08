@@ -71,10 +71,12 @@ var objects;
         Player.prototype.changeZone = function (newZone) {
             this._zoneMultiplier = newZone;
             if (newZone == config.Zone.alternateZone) {
-                this.gotoAndPlay("idle");
+                this.gotoAndPlay("run_alt");
+                this._gravity *= config.Zone.alternateZone;
             }
             else {
                 this.gotoAndPlay("run");
+                this._gravity /= config.Zone.alternateZone;
             }
         };
         Player.prototype.moveRight = function () {
@@ -110,7 +112,7 @@ var objects;
                 }
                 // Set jump velocity based on dimension
                 if (this._zoneMultiplier == config.Zone.alternateZone) {
-                    this._velocity.y = -70 / this._zoneMultiplier / 5;
+                    this._velocity.y = -70 / this._zoneMultiplier / 2;
                 }
                 else {
                     this._velocity.y = -70 / this._zoneMultiplier;
@@ -120,13 +122,23 @@ var objects;
             }
         };
         Player.prototype.idle = function () {
-            this.gotoAndPlay("idle");
+            if (dimension == config.Dimension.firstDimension) {
+                this.gotoAndPlay("idle");
+            }
+            else {
+                this.gotoAndPlay("idle_alt");
+            }
             this._isRunning = false;
             this._accelerationX = 0;
         };
         Player.prototype._setMoving = function () {
-            if (!this._isRunning && this._zoneMultiplier == config.Zone.realZone) {
-                this.gotoAndPlay("run");
+            if (!this._isRunning) {
+                if (dimension == config.Dimension.firstDimension) {
+                    this.gotoAndPlay("run");
+                }
+                else {
+                    this.gotoAndPlay("run_alt");
+                }
                 this._isRunning = true;
             }
         };

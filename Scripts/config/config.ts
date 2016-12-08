@@ -23,7 +23,7 @@ module config {
     
     export class Zone {
         public static realZone : number = 1;
-        public static alternateZone : number = 0.05;
+        public static alternateZone : number = 0.5;
     }
     
     export class Dimension {

@@ -13,7 +13,6 @@ module scenes {
         private _fg : createjs.Bitmap;
         
         private _menuLabel : createjs.Bitmap;
-        private _menuLabel2 : objects.Label;
             
         // Button 
         private _playBtn : objects.Button;
@@ -53,6 +52,8 @@ module scenes {
             
             //Add label
             this._menuLabel = new createjs.Bitmap(assets.getResult("title"));
+            this._menuLabel.regX = this._menuLabel.getBounds().width / 2;
+            this._menuLabel.x = config.Screen.CENTER_X;
             this.addChild(this._menuLabel);
             
             

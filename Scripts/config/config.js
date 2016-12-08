@@ -35,7 +35,7 @@ var config;
         function Zone() {
         }
         Zone.realZone = 1;
-        Zone.alternateZone = 0.05;
+        Zone.alternateZone = 0.5;
         return Zone;
     }());
     config.Zone = Zone;

@@ -33,7 +33,8 @@ var assetData = [
     { id: "b_spike", src: "../../Assets/images/Spike.png" },
     { id: "invisibleWall", src: "../../Assets/images/invisibleWall_2x500.png" },
     { id: "title", src: "../../Assets/images/title.png" },
-    { id: "player", src: "../../Assets/images/runner.png" }
+    { id: "player", src: "../../Assets/images/runner.png" },
+    { id: "enemyReticle", src: "../../Assets/images/reticle-shift-2.png" }
 ];
 function preload() {
     // Create a queue for assets being loaded
@@ -56,6 +57,8 @@ function init() {
         animations: {
             idle: 5,
             run: { frames: [8, 9, 10, 11, 12, 13, 14, 15], speed: 0.25 },
+            idle_alt: 21,
+            run_alt: { frames: [24, 25, 26, 27, 28, 29, 30, 31], speed: 0.1 },
         }
     };
     var newData1 = {

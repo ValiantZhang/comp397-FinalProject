@@ -25,7 +25,11 @@ module objects {
                 else if(this.position.y<=(config.Screen.CENTER_Y+139))
                      this.direction=1;
                     
-                this.position.y+=4*Math.random()*this.direction; 
+                if (dimension == config.Dimension.firstDimension){
+                    this.position.y+=4*Math.random()*this.direction; 
+                } else {
+                    this.position.y+=4*Math.random()*this.direction * config.Zone.alternateZone;
+                }
                
                     
             }

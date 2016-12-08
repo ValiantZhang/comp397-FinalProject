@@ -22,7 +22,6 @@ var objects;
             // Register mouseover and mouseout event listeners. 
             this.on("mouseover", this.overButton, this);
             this.on("mouseout", this.outButton, this);
-            this.on("mousedown", this.downButton, this);
         }
         // Modify the bitmaps when hovering over the button
         Button.prototype.overButton = function (event) {
@@ -33,11 +32,6 @@ var objects;
         Button.prototype.outButton = function (event) {
             this.scaleX /= 1.1;
             this.scaleY /= 1.1;
-        };
-        // Modify the bitmaps alpha value when clicking down the button
-        Button.prototype.downButton = function (event) {
-            this.scaleX /= 1.15;
-            this.scaleY /= 1.15;
         };
         return Button;
     }(createjs.Bitmap));

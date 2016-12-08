@@ -14,6 +14,7 @@
 /// <reference path="../objects/dimensionObject.ts" />
 /// <reference path="../objects/vector2.ts" />
 /// <reference path="../objects/platform.ts" />
+/// <reference path="../objects/invPlatform.ts"/>
 /// <reference path="../objects/spike.ts"/>
 /// <reference path="../objects/hugeWall.ts"/>
 /// <reference path="../objects/enemyObstacle.ts"/>

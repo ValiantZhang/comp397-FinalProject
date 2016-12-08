@@ -12,6 +12,7 @@ module objects {
         private _scaleX:number;
         private _scaleY:number;
         private _speed:number=2;
+        private _hoverReticle:createjs.Bitmap;
         public target:objects.Vector2;
 
         constructor(animation:createjs.SpriteSheet, target) {
@@ -21,6 +22,8 @@ module objects {
             this.on("mouseover", this.overButton, this);
             this.on("mouseout", this.outButton, this);
             this.on("mousedown", this.destroy, this);
+            this.cursor = "none";
+            this._hoverReticle = new createjs.Bitmap(assets.getResult("bgBack"));
            
         }
 

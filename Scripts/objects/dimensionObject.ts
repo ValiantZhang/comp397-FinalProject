@@ -38,8 +38,10 @@ module objects {
                                                  
             if (this._dimension == this._physicalDimension){
                 this.gotoAndPlay("idle");
+                this.alpha = 1;
             } else {
                 this.gotoAndPlay("alt");
+                this.alpha = 0.5;
             }
         }
         

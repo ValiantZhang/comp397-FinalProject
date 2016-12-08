@@ -14,6 +14,8 @@ var objects;
             this.on("mouseover", this.overButton, this);
             this.on("mouseout", this.outButton, this);
             this.on("mousedown", this.destroy, this);
+            this.cursor = "none";
+            this._hoverReticle = new createjs.Bitmap(assets.getResult("bgBack"));
         }
         Enemy.prototype.update = function () {
             _super.prototype.update.call(this);

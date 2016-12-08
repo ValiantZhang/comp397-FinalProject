@@ -33,6 +33,8 @@ var scenes;
             this._playBtn.on("click", this._playBtnClick, this);
             //Add label
             this._menuLabel = new createjs.Bitmap(assets.getResult("title"));
+            this._menuLabel.regX = this._menuLabel.getBounds().width / 2;
+            this._menuLabel.x = config.Screen.CENTER_X;
             this.addChild(this._menuLabel);
             // Add instructions button
             this._howToPlayBtn = new objects.Button("btnInstruct", config.Screen.CENTER_X, config.Screen.CENTER_Y + 80);
