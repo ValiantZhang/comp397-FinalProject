@@ -8,9 +8,11 @@ var objects;
     var EnemyObstacle = (function (_super) {
         __extends(EnemyObstacle, _super);
         function EnemyObstacle(defaultPosition) {
-            _super.call(this, "enemyOb", config.Dimension.firstDimension, "enemyObstacle", "enemyObstacle", 500, 500);
+            _super.call(this, "enemyOb", config.Dimension.dualDimension, "enemyObstacle", "enemyObstacle", 243, 304);
             this.x = this.position.x = defaultPosition.x;
             this.y = this.position.y = defaultPosition.y;
+            this._hasAttacked = false;
+            this._startingY = this.position.y;
         }
         EnemyObstacle.prototype.start = function () {
             this.scaleX = 1;
@@ -19,15 +21,30 @@ var objects;
         EnemyObstacle.prototype.update = function () {
             _super.prototype.update.call(this);
             this.checkDimension();
+            if (this._hasAttacked) {
+                if (this.position.y > this._startingY - 150) {
+                    this.position.y -= 3;
+                }
+            }
         };
         EnemyObstacle.prototype.checkDimension = function () {
             if (dimension == config.Dimension.secondDimension) {
                 this.alpha = 1.0;
             }
             else {
-                this.alpha = 0.1;
+                this.alpha = 0.3;
             }
         };
+        EnemyObstacle.prototype.attack = function () {
+            this._hasAttacked = true;
+        };
+        Object.defineProperty(EnemyObstacle.prototype, "hasAttacked", {
+            get: function () {
+                return this._hasAttacked;
+            },
+            enumerable: true,
+            configurable: true
+        });
         EnemyObstacle.prototype.endGame = function () {
             stage.removeAllChildren();
             scene = config.Scene.MENU;

@@ -7,16 +7,14 @@ var objects;
 (function (objects) {
     var Spike = (function (_super) {
         __extends(Spike, _super);
-        function Spike(x_position, moving, sprit) {
+        function Spike(x_position, moving, sprit, dim) {
             if (moving === void 0) { moving = false; }
-            if (sprit === void 0) { sprit = "spike"; }
-            _super.call(this, "spike1", config.Dimension.firstDimension, sprit, sprit, 128, 87);
+            if (dim === void 0) { dim = config.Dimension.firstDimension; }
+            _super.call(this, sprit, dim, sprit, sprit, 128, 87);
             this.direction = 1;
-            //console.log("block" + defaultPosition.x+ " : "+ defaultPosition.y);
             this.moveable = moving;
             this.x = this.position.x = x_position;
             this.y = this.position.y = config.Screen.CENTER_Y + 140;
-            //this.position =defaultPosition;
         }
         Spike.prototype.update = function () {
             if (this.moveable) {

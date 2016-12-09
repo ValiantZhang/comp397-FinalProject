@@ -12,7 +12,13 @@ var scenes;
             //this.start();
         }
         Level2.prototype.start = function () {
-            this._spawnDelay = 5000 - this._getRandomNum();
+            // Set level label
+            this._levelString = "The Woods";
+            this._levelLabel = new objects.Label("Zone: " + this._levelString, "28px Consolas", "#999", config.Screen.CENTER_X, 600);
+            this.addChild(this._levelLabel);
+            // Set dimension
+            dimension = config.Dimension.firstDimension;
+            this._spawnDelay = 3000 - this._getRandomNum();
             this._currentTick = createjs.Ticker.getTime();
             this._spawnTime = this._currentTick + this._spawnDelay;
             this._maxEnemies = 5;
@@ -44,6 +50,9 @@ var scenes;
             this._fg = new objects.Parallax(assets.getResult("bgFront"));
             this._fg.setAutoScroll(false);
             this.addChild(this._fg);
+            this._fg2 = new createjs.Bitmap(assets.getResult("blackBox"));
+            this._fg2.y = 497;
+            this.addChild(this._fg2);
             // Scrollable object container
             this._scrollableObjContainer = new createjs.Container();
             this._buildLevel();
@@ -51,47 +60,47 @@ var scenes;
             this._player.position.x = config.Screen.CENTER_X;
             this._player.position.y = config.Screen.CENTER_Y + 150;
             this.addChild(this._player);
-            //this._scrollableObjContainer.addChild(this._bg);
-            //this._scrollableObjContainer.addChild(this._player);
-            //this._scrollableObjContainer.addChild(this._ground);
-            // this._ground.y = 535;
             this.addChild(this._scrollableObjContainer);
             this.setChildIndex(this._fg, this.getNumChildren() - 1);
+            this.setChildIndex(this._levelLabel, this.getNumChildren() - 1);
             window.onkeydown = this._onKeyDown;
             window.onkeyup = this._onKeyUp;
             stage.addChild(this);
         };
         Level2.prototype.update = function () {
-            if (controls.SHIFT) {
-                this._dimensionTimer = 10;
-                this._shifting = true;
-                this._dimensionShift();
-                controls.SHIFT = false;
-                this._normalView = this._normalView ? false : true;
-                this._shifting = this._normalView ? false : true;
-            }
-            if (controls.LEFT) {
-                controls.RIGHT = false;
-                this._player.moveLeft();
-                if (this._checkScroll()) {
-                    this._scrollBG(-1);
-                    this._player.position.x = this._scrollTrigger / 4;
+            // Player controls
+            {
+                if (controls.SHIFT) {
+                    this._dimensionTimer = 10;
+                    this._shifting = true;
+                    this._dimensionShift();
+                    controls.SHIFT = false;
+                    this._normalView = this._normalView ? false : true;
+                    this._shifting = this._normalView ? false : true;
                 }
-            }
-            else if (controls.RIGHT) {
-                controls.LEFT = false;
-                this._player.moveRight();
-                if (this._checkScroll()) {
-                    this._scrollBG(1);
-                    this._player.position.x = this._scrollTrigger;
+                if (controls.LEFT) {
+                    controls.RIGHT = false;
+                    this._player.moveLeft();
+                    if (this._checkScroll()) {
+                        this._scrollBG(-1);
+                        this._player.position.x = this._scrollTrigger / 4;
+                    }
                 }
-            }
-            if (controls.JUMP) {
-                this._player.jump();
-            }
-            if (!controls.RIGHT && !controls.LEFT) {
-                this._player.resetAcceleration();
-                this._player.idle();
+                else if (controls.RIGHT) {
+                    controls.LEFT = false;
+                    this._player.moveRight();
+                    if (this._checkScroll()) {
+                        this._scrollBG(1);
+                        this._player.position.x = this._scrollTrigger;
+                    }
+                }
+                if (controls.JUMP) {
+                    this._player.jump();
+                }
+                if (!controls.RIGHT && !controls.LEFT) {
+                    this._player.resetAcceleration();
+                    this._player.idle();
+                }
             }
             this._keepAboveGround();
             this._checkPlatformCol();
@@ -101,32 +110,44 @@ var scenes;
                 var o = _a[_i];
                 o.update();
             }
-            // for(let enemy of this._enemies ) {
-            //     enemy.update();
-            //     if (this._checkCollision(this._player, enemy)){
-            //         enemy.endGame();
-            //     }
-            // }
-            // for(let enemyOb of this._enemyObstacles ) {
-            //     enemyOb.update();
-            //     if (this._checkCollision(this._player, enemyOb)){
-            //         enemyOb.endGame();
-            //     }
-            // }
-            for (var _b = 0, _c = this._spikes1; _b < _c.length; _b++) {
-                var spike = _c[_b];
-                if (this._checkCollision(this._player, spike)) {
+            for (var _b = 0, _c = this._enemies; _b < _c.length; _b++) {
+                var enemy = _c[_b];
+                enemy.update();
+                // Check if enemies are dead and call cleanup
+                if (!enemy.isAlive) {
+                    var index = this._enemies.indexOf(enemy);
+                    this._enemies.splice(index, 1);
+                }
+                // Check collision with player
+                if (this._checkCollision(this._player, enemy)) {
+                    enemy.endGame();
+                }
+            }
+            for (var _d = 0, _e = this._spikes1; _d < _e.length; _d++) {
+                var spike = _e[_d];
+                if (this._checkDimensionCollision(this._player, spike)) {
                     spike.endGame();
                 }
             }
-            for (var _d = 0, _e = this._movingSpikes1; _d < _e.length; _d++) {
-                var spike = _e[_d];
-                if (this._checkCollision(this._player, spike)) {
+            for (var _f = 0, _g = this._movingSpikes1; _f < _g.length; _f++) {
+                var spike = _g[_f];
+                if (this._checkDimensionCollision(this._player, spike)) {
                     spike.endGame();
+                }
+            }
+            for (var _h = 0, _j = this._enemyObstacles; _h < _j.length; _h++) {
+                var eo = _j[_h];
+                eo.update();
+                if (this._checkCollision(this._player, eo)) {
+                    eo.endGame();
+                }
+                if (this._player.position.x > eo.position.x - 150 && !eo.hasAttacked) {
+                    eo.attack();
                 }
             }
             this._spawnEnemy();
         };
+        // Key down events
         Level2.prototype._onKeyDown = function (event) {
             switch (event.keyCode) {
                 case keys.W:
@@ -148,6 +169,7 @@ var scenes;
                     break;
             }
         };
+        // Key up events
         Level2.prototype._onKeyUp = function (event) {
             switch (event.keyCode) {
                 case keys.W:
@@ -170,27 +192,31 @@ var scenes;
                     break;
             }
         };
+        // Scroll elements
         Level2.prototype._scrollBG = function (speed) {
             if (dimension == config.Dimension.firstDimension) {
                 this._bg.scroll(speed);
                 this._fg.scroll(speed * 10);
-                // this._scrollableObjContainer.regX += speed * 10;
                 for (var i = 0; i < this._scrollableObjContainer.numChildren; i++) {
                     var child = this._scrollableObjContainer.getChildAt(i);
                     child.position.x -= speed * 10;
                 }
+                // Scroll end of level sign
+                this._nextLvlSign.x -= speed * 10;
             }
             else {
                 this._bg.scroll(speed * config.Zone.alternateZone);
                 this._fg.scroll(speed * 10 * config.Zone.alternateZone);
                 this._player.resetAcceleration();
-                // this._scrollableObjContainer.regX += speed * 10 * config.Zone.alternateZone;
                 for (var i = 0; i < this._scrollableObjContainer.numChildren; i++) {
                     var child = this._scrollableObjContainer.getChildAt(i);
                     child.position.x -= speed * 10 * config.Zone.alternateZone;
                 }
+                // Scroll end of level sign
+                this._nextLvlSign.x -= speed * 10 * config.Zone.alternateZone;
             }
         };
+        // Check bounds if need to scroll
         Level2.prototype._checkScroll = function () {
             if (this._player.position.x > this._scrollTrigger && controls.RIGHT ||
                 this._player.position.x < this._scrollTrigger / 4 && controls.LEFT) {
@@ -200,6 +226,7 @@ var scenes;
                 return false;
             }
         };
+        // Keep player above ground
         Level2.prototype._keepAboveGround = function () {
             if (this._player.position.y > config.Screen.CENTER_Y + 130) {
                 this._player.position.y = config.Screen.CENTER_Y + 130;
@@ -226,24 +253,39 @@ var scenes;
             }
             this.removeChild(this._scrollableObjContainer);
             this.addChild(this._scrollableObjContainer);
+            this.removeChild(this._nextLvlSign);
+            this.addChild(this._nextLvlSign);
             this.removeChild(this._player);
             this.addChild(this._player);
             this.removeChild(this._fg);
             this.addChild(this._fg);
+            this.removeChild(this._fg2);
+            this.addChild(this._fg2);
+            this.removeChild(this._levelLabel);
+            this.addChild(this._levelLabel);
             // Change dimension of objects
             this._switchDimensionObjects();
         };
         // Populate level
         Level2.prototype._buildLevel = function () {
             var _this = this;
-            var platforms1 = [[8, 6], [9, 5], [9, 5.5], [10, 6], [12.5, 0], [14, 2], [16, 5], [19, 4], [20, 2], [23, 0], [28, 5.5], [30, 4], [34, 0], [33, 6], [33.5, 5.5], [34, 5], [34.5, 5.5], [35, 5], [35.5, 5.5], [36, 6]];
+            // Dimension 1
+            var platforms1 = [[7.4, 6], [8.7, 5.5], [10, 5], [12.5, 0], [18, 5], [20, 4], [22, 2], [28, 5.5], [30, 4], [34, 0], [33, 6], [33.5, 5.5], [34, 5], [34.5, 5.5], [35, 5], [35.5, 5.5], [36, 6]];
             platforms1.forEach(function (el) {
                 var currentBlock = new objects.Platform("platformVines", new objects.Vector2(tileSize * el[0] + tileSize / 2, 100 + tileSize / 2 * (el[1] - 1) + tileSize / 2));
                 _this._platforms1.push(currentBlock);
                 _this._dimensionObjects.push(currentBlock);
                 _this._scrollableObjContainer.addChild(currentBlock);
             });
-            var enemyObstacles1 = [[13.5, 5.5], [35.5, 8]];
+            // Dimension Two
+            var platforms2 = [[14, 2], [25, 0]];
+            platforms2.forEach(function (el) {
+                var currentBlock = new objects.Platform("platformVines", new objects.Vector2(tileSize * el[0] + tileSize / 2, 100 + tileSize / 2 * (el[1] - 1) + tileSize / 2), config.Dimension.secondDimension);
+                _this._platforms1.push(currentBlock);
+                _this._dimensionObjects.push(currentBlock);
+                _this._scrollableObjContainer.addChild(currentBlock);
+            });
+            var enemyObstacles1 = [[12, 7], [34.5, 7]];
             enemyObstacles1.forEach(function (el) {
                 var currentBlock = new objects.EnemyObstacle(new objects.Vector2(tileSize * el[0] + tileSize / 2, 100 + tileSize / 2 * (el[1] - 1) + tileSize / 2));
                 _this._enemyObstacles.push(currentBlock);
@@ -259,27 +301,27 @@ var scenes;
             });
             var spikes1 = [23, 24, 25, 26.5];
             spikes1.forEach(function (el) {
-                var currentBlock = new objects.Spike(tileSize * el + tileSize / 2);
+                var currentBlock = new objects.Spike(tileSize * el + tileSize / 2, false, "spike", config.Dimension.dualDimension);
                 _this._spikes1.push(currentBlock);
                 _this._dimensionObjects.push(currentBlock);
                 _this._scrollableObjContainer.addChild(currentBlock);
             });
-            var movingSpikes1 = [16, 28];
+            var movingSpikes1 = [14, 15, 16, 28];
             movingSpikes1.forEach(function (el) {
                 var currentBlock = new objects.Spike(tileSize * el + tileSize / 2, true, "b_spike");
                 _this._movingSpikes1.push(currentBlock);
                 _this._dimensionObjects.push(currentBlock);
                 _this._scrollableObjContainer.addChild(currentBlock);
             });
-            var enemySpawners = [45, 47];
-            enemySpawners.forEach(function (el) {
-                var currentBlock = new objects.EnemySpawner(tileSize * el + tileSize / 2);
-                _this._enemySpawners.push(currentBlock);
-                _this._dimensionObjects.push(currentBlock);
-                _this._scrollableObjContainer.addChild(currentBlock);
-            });
-            this._endArea = new objects.HugeWall(new objects.Vector2(9000, 0));
+            // End of level
+            this._nextLvlSign = new createjs.Bitmap(assets.getResult("signVillage"));
+            this._nextLvlSign.y = 350;
+            this._nextLvlSign.x = 7500;
+            this.addChild(this._nextLvlSign);
+            this._shortcut = new objects.HugeWall(new objects.Vector2(-100, config.Screen.CENTER_Y));
+            this._endArea = new objects.HugeWall(new objects.Vector2(8000, config.Screen.CENTER_Y));
             this._scrollableObjContainer.addChild(this._endArea);
+            this._scrollableObjContainer.addChild(this._shortcut);
         };
         // Populate enemies
         Level2.prototype._addEnemies = function (x, y) {
@@ -289,14 +331,17 @@ var scenes;
             this._enemies.push(newEnemy);
             this._scrollableObjContainer.addChild(newEnemy);
         };
+        // Spawn Enemy
         Level2.prototype._spawnEnemy = function () {
-            if (createjs.Ticker.getTime() >= this._spawnTime && this._enemiesSpawned < this._maxEnemies) {
-                this._addEnemies(this._player.position.x - 500, this._player.position.y - 500);
+            if (createjs.Ticker.getTime() >= this._spawnTime) {
+                // Generate enemy on left edge
+                this._addEnemies(0, 0);
                 this._currentTick = createjs.Ticker.getTime();
                 this._spawnTime = this._currentTick + this._spawnDelay;
                 this._enemiesSpawned += 1;
             }
         };
+        // Random number
         Level2.prototype._getRandomNum = function () {
             return Math.floor(Math.random() * ((200 + 200 - 200) + 200));
         };
@@ -308,7 +353,7 @@ var scenes;
             for (var _i = 0, _a = this._platforms1; _i < _a.length; _i++) {
                 var a = _a[_i];
                 // Check for collision
-                if (this._checkCollision(this._player, a)) {
+                if (this._checkDimensionCollision(this._player, a)) {
                     collisionCount += 1;
                     // Check if collision is with top of object
                     if (this._checkTopFace(this._player, a)) {
@@ -335,9 +380,10 @@ var scenes;
         };
         // Move to new level
         Level2.prototype._switchLevel = function () {
-            if (this._checkCollision(this._player, this._endArea)) {
+            if (this._checkCollision(this._player, this._endArea) ||
+                this._checkCollision(this._player, this._shortcut)) {
                 stage.removeAllChildren();
-                scene = config.Scene.LEVEL2;
+                scene = config.Scene.LEVEL3;
                 changeScene();
             }
         };
@@ -348,6 +394,19 @@ var scenes;
                 obj2.rightSide > player.leftSide + player.width / 2 &&
                 obj2.topSide < player.botSide &&
                 obj2.botSide > player.topSide) {
+                return true;
+            }
+            return false;
+        };
+        // Collision detection for multi dimension objects
+        Level2.prototype._checkDimensionCollision = function (player, obj2) {
+            // Check for intersection
+            if (obj2.leftSide < player.rightSide - player.width / 2 &&
+                obj2.rightSide > player.leftSide + player.width / 2 &&
+                obj2.topSide < player.botSide &&
+                obj2.botSide > player.topSide &&
+                (obj2.physicalDimension == dimension ||
+                    obj2.physicalDimension == config.Dimension.dualDimension)) {
                 return true;
             }
             return false;

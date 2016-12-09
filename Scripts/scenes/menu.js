@@ -22,9 +22,17 @@ var scenes;
             // Add filter
             this._dimensionFilter = new createjs.Bitmap(assets.getResult("filter"));
             this.addChild(this._dimensionFilter);
+            // City sign
+            this._nextLvlSign = new createjs.Bitmap(assets.getResult("signCity"));
+            this._nextLvlSign.y = 350;
+            this._nextLvlSign.x = 920;
+            this.addChild(this._nextLvlSign);
             // Add foreground
             this._fg = new createjs.Bitmap(assets.getResult("bgFront"));
             this.addChild(this._fg);
+            this._fg2 = new createjs.Bitmap(assets.getResult("blackBox"));
+            this._fg2.y = 497;
+            this.addChild(this._fg2);
             // Add play button
             this._playBtn = new objects.Button("btnPlay", config.Screen.CENTER_X, config.Screen.CENTER_Y - 20);
             this._playBtn.scaleX = 0.75;
@@ -43,17 +51,28 @@ var scenes;
             this.addChild(this._howToPlayBtn);
             this._howToPlayBtn.on("click", this._howToPlayBtnClick, this);
             this._player = new objects.Player(player_anim, "player");
-            this._player.x = config.Screen.CENTER_X + 150;
-            this._player.y = config.Screen.CENTER_Y + 150;
+            this._player.x = config.Screen.CENTER_X + 180;
+            this._player.y = config.Screen.CENTER_Y + 130;
             this.addChild(this._player);
+            // Add filter
+            this._deathFilter = new createjs.Bitmap(assets.getResult("deathFilter"));
+            this._deathFilterCounter = 1.0;
+            if (config.Game.PLAYED) {
+                this.addChild(this._deathFilter);
+            }
             // Add menu scene to global stage container
             stage.addChild(this);
             window.onkeydown = this._onKeyDown;
         };
         Menu.prototype.update = function () {
             this._bg.update();
+            if (this._deathFilterCounter > 0 && config.Game.PLAYED) {
+                this._deathFilterCounter -= 0.01;
+                this._deathFilter.set({ alpha: this._deathFilterCounter });
+            }
         };
         Menu.prototype._playBtnClick = function (event) {
+            config.Game.PLAYED = true;
             scene = config.Scene.GAME;
             changeScene();
         };

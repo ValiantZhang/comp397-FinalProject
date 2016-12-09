@@ -19,6 +19,7 @@ module config {
     
     export class Game {
         public static FPS : number = 60;
+        public static PLAYED : boolean = false;
     }
     
     export class Zone {
@@ -29,6 +30,7 @@ module config {
     export class Dimension {
         public static firstDimension : number = 0;
         public static secondDimension : number = 1;
+        public static dualDimension : number = 2;
     }
 
     

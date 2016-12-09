@@ -16,13 +16,16 @@ var tileSize = 128;
 var assetData = [
     { id: "bgBack", src: "../../Assets/images/bg-back.png" },
     { id: "bgBack2", src: "../../Assets/images/bg-back2.png" },
+    { id: "bgBack3", src: "../../Assets/images/bg-back3.png" },
     { id: "bgTut", src: "../../Assets/images/tutorial.png" },
     { id: "platform1_3", src: "../../Assets/images/tile_1_3.png" },
     { id: "platform1_3_alt", src: "../../Assets/images/tile_1_3_alt.png" },
     { id: "platformVines", src: "../../Assets/images/tile_1_3_vine.png" },
+    { id: "platformWood", src: "../../Assets/images/tile_1_3_wood.png" },
     { id: "bgFront", src: "../../Assets/images/bg-front.png" },
     { id: "filter", src: "../../Assets/images/dimension1-bg.png" },
     { id: "filterLvl2", src: "../../Assets/images/dimension3-bg.png" },
+    { id: "filterLvl3", src: "../../Assets/images/dimension4-bg.png" },
     { id: "filterAlt", src: "../../Assets/images/dimension2-bg.png" },
     { id: "btnPlay", src: "../../Assets/images/btn-play.png" },
     { id: "btnInstruct", src: "../../Assets/images/btn-how-to-play.png" },
@@ -34,7 +37,13 @@ var assetData = [
     { id: "invisibleWall", src: "../../Assets/images/invisibleWall_2x500.png" },
     { id: "title", src: "../../Assets/images/title.png" },
     { id: "player", src: "../../Assets/images/runner.png" },
-    { id: "enemyReticle", src: "../../Assets/images/reticle-shift-2.png" }
+    { id: "enemyReticle", src: "../../Assets/images/reticle-shift-2.png" },
+    { id: "signWoods", src: "../../Assets/images/wood-sign-woods.png" },
+    { id: "signVillage", src: "../../Assets/images/wood-sign-village.png" },
+    { id: "signWin", src: "../../Assets/images/wood-sign-win.png" },
+    { id: "signCity", src: "../../Assets/images/wood-sign-city.png" },
+    { id: "blackBox", src: "../../Assets/images/bg-blackbox.png" },
+    { id: "deathFilter", src: "../../Assets/images/deathFilter.png" }
 ];
 function preload() {
     // Create a queue for assets being loaded
@@ -68,54 +77,8 @@ function init() {
             "idle": { "frames": [0, 1, 2, 3], "speed": 0.2, next: true }
         }
     };
-    /*let atlasData = {
-        
-        images: [ assets.getResult("player") ],
-            
-        frames: {width:120, height:120, count:32, regX: 60, regY:60, spacing:0, margin:0},
-        
-        animations: {
-            idle: 5,
-            run: { frames: [ 8, 9, 10, 11, 12, 13, 14, 15], speed: 0.5 },
-        }
-    }*/
-    // let atlasData = {
-    //     "images": [
-    //         /*
-    //         assets.getResult("player"),
-    //         assets.getResult("block"),
-    //         assets.getResult("pipe1.png"),
-    //         assets.getResult("pipe2.png"),
-    //         assets.getResult("pipe3.png"),
-    //         assets.getResult("qBlock")
-    //         */
-    //         assets.getResult("atlas")
-    //     ],
-    //     "frames":[
-    //         [40,0,45,45,0,0,0],
-    //         [43,45,46,86,0,0,0],
-    //         [43.131,39,86,0,0,0],
-    //         [0,131,43,86,0,0,0],
-    //         [0,217,87,87,0,0,0],
-    //         [0,304,87,130,0,0,0],
-    //         [0,434,93,175,0,0,0],
-    //         [0,45,43,86,0,0,0],
-    //         [0,0,40,45,0,0,0]
-    //     ],
-    //     "animations":{
-    //         "run" : { "frames" : [1, 3] , speed : 0.5},
-    //         "player" : { "frames" : [7] },
-    //         "block" : { "frames" : [0] },
-    //         "qBlock" : { "frames" : [8]}, 
-    //         "pipe1" : { "frames" : [4] },
-    //         "pipe2" : { "frames" : [5] },
-    //         "pipe3" : { "frames" : [6] }
-    //     }, 
-    // }
-    // atlas = new createjs.SpriteSheet(atlasData);
     player_anim = new createjs.SpriteSheet(newData0);
     enemy1_anim = new createjs.SpriteSheet(newData1);
-    //atlas = new createjs.SpriteSheet(atlasData);
     scene = config.Scene.MENU;
     changeScene();
 }
@@ -142,6 +105,11 @@ function changeScene() {
             stage.removeAllChildren();
             currentScene = new scenes.Level2();
             console.log("Starting LEVEL 2 scene");
+            break;
+        case config.Scene.LEVEL3:
+            stage.removeAllChildren();
+            currentScene = new scenes.Level3();
+            console.log("Starting LEVEL 3 scene");
             break;
         case config.Scene.TUTORIAL:
             stage.removeAllChildren();

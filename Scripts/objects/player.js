@@ -13,7 +13,6 @@ var objects;
             this._maxSpeedX = 30;
             this._jumpSpeed = 10;
             this._friction = -1;
-            this._zoneMultiplier = config.Zone.realZone;
             this._isStar = false;
             this._isDead = false;
             this._isGrounded = false;
@@ -26,6 +25,8 @@ var objects;
             this._velocity = new objects.Vector2(0, 0);
             this._accelerationX = 0;
             this._maxAccelerationX = 30;
+            this._zoneMultiplier = config.Zone.realZone;
+            ;
         };
         Player.prototype.update = function () {
             // Apply acceleration and friction to velocity

@@ -5,14 +5,13 @@ module objects {
         private moveable : boolean;
         private direction:number=1;
         
-        constructor(x_position : number,moving : boolean = false, sprit : string = "spike") {
-            super("spike1",config.Dimension.firstDimension, sprit, sprit, 128, 87);
-           
-            //console.log("block" + defaultPosition.x+ " : "+ defaultPosition.y);
+        constructor(x_position : number,moving : boolean = false, sprit : string, 
+                    dim : number = config.Dimension.firstDimension) {
+            super(sprit, dim, sprit, sprit, 128, 87);
+
             this.moveable =moving;     
             this.x = this.position.x = x_position;
             this.y = this.position.y = config.Screen.CENTER_Y+140;
-            //this.position =defaultPosition;
         }
           
         public update(){

@@ -28,6 +28,7 @@ var config;
         function Game() {
         }
         Game.FPS = 60;
+        Game.PLAYED = false;
         return Game;
     }());
     config.Game = Game;
@@ -44,6 +45,7 @@ var config;
         }
         Dimension.firstDimension = 0;
         Dimension.secondDimension = 1;
+        Dimension.dualDimension = 2;
         return Dimension;
     }());
     config.Dimension = Dimension;

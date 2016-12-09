@@ -8,7 +8,7 @@ module objects {
         private _maxAccelerationX : number;
         private _jumpSpeed : number = 10;
         private _friction : number = -1;
-        private _zoneMultiplier : number = config.Zone.realZone;
+        private _zoneMultiplier : number;
 
         private _isStar : boolean = false;
         private _isDead : boolean = false;
@@ -27,6 +27,7 @@ module objects {
             this._velocity = new objects.Vector2(0,0);
             this._accelerationX = 0;
             this._maxAccelerationX = 30;
+            this._zoneMultiplier = config.Zone.realZone;;
         }
 
         public update() : void {

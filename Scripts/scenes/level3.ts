@@ -1,5 +1,5 @@
 module scenes {
-    export class Play extends objects.Scene {
+    export class Level3 extends objects.Scene {
 
         private _bg : objects.Parallax;
         private _fg : objects.Parallax;
@@ -19,7 +19,9 @@ module scenes {
         private _enemies : objects.Enemy[];
         private _endArea : objects.HugeWall;
         private _shortcut : objects.HugeWall;
+        private _moreEnemiesTrigger : objects.HugeWall;
         private _scrollTrigger : number;
+        private _spawnFaster : boolean;
         private _spawnTime : number;
         private _spawnDelay : number;
         private _currentTick : number;
@@ -29,18 +31,21 @@ module scenes {
         private _levelLabel : objects.Label;
         private _levelString : string;
 
+
         constructor() {
             super();
             //this.start();
         }
 
         public start() : void {
+            // Initialize level values
+            {
             // Set level label
-            this._levelString = "City Outskirts";
-            this._levelLabel = new objects.Label("Level: " + this._levelString, "36px Consolas", "#0F0",  
-                               config.Screen.CENTER_X - 100, config.Screen.CENTER_Y - 100);
+            this._levelString = "The Village";
+            this._levelLabel = new objects.Label("Zone: " + this._levelString, "28px Consolas", "#999",  
+                               config.Screen.CENTER_X, 600);
             this.addChild(this._levelLabel);
-            
+                
             // Set dimension
             dimension = config.Dimension.firstDimension;
             
@@ -49,6 +54,7 @@ module scenes {
             this._spawnTime = this._currentTick + this._spawnDelay;
             this._maxEnemies = 15;
             this._enemiesSpawned = 0;
+            this._spawnFaster = false;
             // Create an empty array to store platforms and dimension objects
             this._platforms1 = [];
             this._spikes1 = [];
@@ -65,14 +71,17 @@ module scenes {
             
             // Set slow-mo timer for dimension shift
             this._dimensionTimer = 3;
+            }
 
+            // Add GameObjects to the scene
+            {
             // Add bg
-            this._bg = new objects.Parallax(assets.getResult("bgBack"));
+            this._bg = new objects.Parallax(assets.getResult("bgBack3"));
             this._bg.setAutoScroll(false);
             this.addChild(this._bg);
 
             // Add filters
-            this._dimensionFilter = new createjs.Bitmap(assets.getResult("filter"));
+            this._dimensionFilter = new createjs.Bitmap(assets.getResult("filterLvl3"));
             this.addChild(this._dimensionFilter);
             this._dimensionFilter2 = new createjs.Bitmap(assets.getResult("filterAlt"));
             
@@ -95,15 +104,13 @@ module scenes {
             this.addChild(this._player);
             
             this.addChild(this._scrollableObjContainer);
-            
-            // Set level label
-            this._levelString = "City Outskirts";
-            this._levelLabel = new objects.Label("Zone: " + this._levelString, "28px Consolas", "#999",  
-                               config.Screen.CENTER_X, 600);
-            this.addChild(this._levelLabel);
+            }
 
+            // Force child index on foreground
             this.setChildIndex(this._fg, this.getNumChildren()-1);
             this.setChildIndex(this._levelLabel, this.getNumChildren()-1);
+            
+            // Bind keys
             window.onkeydown = this._onKeyDown;
             window.onkeyup = this._onKeyUp;
 
@@ -112,6 +119,8 @@ module scenes {
 
         public update() : void {
 
+            // Player Controls
+            {
             if (controls.SHIFT){
                 this._dimensionTimer = 10;
                 this._shifting = true;
@@ -144,17 +153,20 @@ module scenes {
                 this._player.resetAcceleration();
                 this._player.idle();
             }
+            }
             
+            // Player collision
             this._keepAboveGround();
             this._checkPlatformCol();
 
+            // Game Object Updates
+            {
             this._player.update();
             this._switchLevel();
-            
+            this._fasterSpawn();
             for(let o of this._dimensionObjects ) {
                 o.update();
             }
-            
             for(let enemy of this._enemies ) {
                 enemy.update();
                 // Check if enemies are dead and call cleanup
@@ -168,7 +180,6 @@ module scenes {
                     enemy.endGame();
                 }
             }
-            
             for(let spike of this._spikes1 ) {
                 if (this._checkDimensionCollision(this._player, spike)){
                     spike.endGame();
@@ -179,10 +190,12 @@ module scenes {
                     spike.endGame();
                 }
             }
+            }
             
             this._spawnEnemy();
         }
 
+        // Keydown events
         private _onKeyDown(event: KeyboardEvent) : void {
              switch(event.keyCode) {
                 case keys.W:
@@ -205,6 +218,7 @@ module scenes {
             }
         }
 
+        // Keyup events
         private _onKeyUp(event : KeyboardEvent) : void {
             switch(event.keyCode) {
                 case keys.W:
@@ -228,6 +242,7 @@ module scenes {
             }
         }
 
+        // Move scrollable elements
         private _scrollBG(speed : number) : void{
             if(dimension == config.Dimension.firstDimension){
                 this._bg.scroll(speed);
@@ -251,6 +266,7 @@ module scenes {
             }
         }
 
+        // Check if player is at scroll counds
         private _checkScroll() : boolean {
             if(this._player.position.x > this._scrollTrigger && controls.RIGHT || 
                 this._player.position.x < this._scrollTrigger / 4 && controls.LEFT) {
@@ -262,7 +278,7 @@ module scenes {
             }
         }
         
-        
+        // Keep player above ground
         private _keepAboveGround() : void{
             if (this._player.position.y > config.Screen.CENTER_Y + 130){
                 this._player.position.y = config.Screen.CENTER_Y + 130;
@@ -309,18 +325,18 @@ module scenes {
         private _buildLevel():void{
             
             // Dimension One
-            var platforms1 =[[10,5],[12,4],[18,1],[22,1],[24,2],[26,3],[29.6,4],[34.4,4],[38,3], [42,3], [46,3], [50,3]];
+            var platforms1 =[[10,3], [15.6,2], [23,5], [26,4], [31,6], [32.6,6], [34.2,6], [35.8,6], [37.4,6], [39,6], [46,5], [50,3], [54,1], [58,3]];
             platforms1.forEach(el => {
-                var currentBlock = new objects.Platform("platform1_3",new objects.Vector2(tileSize*el[0]+tileSize/2,100+tileSize/2*(el[1]-1)+tileSize/2));
+                var currentBlock = new objects.Platform("platformWood",new objects.Vector2(tileSize*el[0]+tileSize/2,100+tileSize/2*(el[1]-1)+tileSize/2));
                 this._platforms1.push(currentBlock);
                 this._dimensionObjects.push(currentBlock);
                 this._scrollableObjContainer.addChild(currentBlock);                
             });
             
             // Dimension Two
-            var platforms2 =[[16,4],[32, 3], [40,3], [44,3], [48,3], [52,3]];
+            var platforms2 =[[11,1], [12.6,1], [14.2,1], [20,5], [29,4], [35,4], [40,4], [42,5], [44,6], [48,4], [52,2], [56,2], [60,4]];
             platforms2.forEach(el => {
-                var currentBlock = new objects.Platform("platform1_3",new objects.Vector2(tileSize*el[0]+tileSize/2,100+tileSize/2*(el[1]-1)+tileSize/2), 
+                var currentBlock = new objects.Platform("platformWood",new objects.Vector2(tileSize*el[0]+tileSize/2,100+tileSize/2*(el[1]-1)+tileSize/2), 
                                    config.Dimension.secondDimension);
                                    
                 this._platforms1.push(currentBlock);
@@ -329,7 +345,7 @@ module scenes {
             });
             
             // Dual Dimension
-            var spikes1 =[13,15,17,19,20,21,30,31,32,33,34];
+            var spikes1 =[11,12.3,13.6,14.9,16.2,17.3,18.6];
             spikes1.forEach(el => {
                 var currentBlock =new objects.Spike(tileSize*el+tileSize/2, false, 
                                   "b_spike", config.Dimension.dualDimension);
@@ -338,7 +354,9 @@ module scenes {
                 this._scrollableObjContainer.addChild(currentBlock);                
             });
             
-            var movingSpikes1 =[39,40,41,43,44,46,48,49,50];
+            var movingSpikes1 =[20, 21.3, 22.6, 23.9, 25.2, 26.5, 27.8, 29.1, 30.4, 31.7, 33, 34.3, 35.6, 
+                                36.9, 38.2, 39.5, 40.8, 42.1, 43.4, 44.7, 46, 47.3, 48.6, 49.9, 51.2, 52.5, 
+                                53.8, 55.1, 56.4, 57.7, 59, 60.3];
             movingSpikes1.forEach(el => {
                 var currentBlock =new objects.Spike(tileSize*el+tileSize/2, true, 
                                   "b_spike", config.Dimension.dualDimension);
@@ -348,14 +366,17 @@ module scenes {
                 this._scrollableObjContainer.addChild(currentBlock);                
             });
             
-
+            // Faster spawn trigger
+            this._moreEnemiesTrigger = new objects.HugeWall(new objects.Vector2(5000, config.Screen.CENTER_Y));
+            this._scrollableObjContainer.addChild(this._moreEnemiesTrigger);
+            
             // End of level
-            this._nextLvlSign = new createjs.Bitmap(assets.getResult("signWoods"));
+            this._nextLvlSign = new createjs.Bitmap(assets.getResult("signWin"));
             this._nextLvlSign.y = 350;
             this._nextLvlSign.x = 7500;
             this.addChild(this._nextLvlSign);
-            this._endArea = new objects.HugeWall(new objects.Vector2(8000, config.Screen.CENTER_Y));
             this._shortcut = new objects.HugeWall(new objects.Vector2(-100, config.Screen.CENTER_Y));
+            this._endArea = new objects.HugeWall(new objects.Vector2(9000, config.Screen.CENTER_Y));
             this._scrollableObjContainer.addChild(this._endArea);
             this._scrollableObjContainer.addChild(this._shortcut);
             
@@ -370,6 +391,7 @@ module scenes {
             this._enemies.push(newEnemy);
         }
         
+        // Spawn enemies
         private _spawnEnemy(): void {
             if (createjs.Ticker.getTime() >= this._spawnTime){  
                 // Generate enemy on left edge
@@ -381,6 +403,7 @@ module scenes {
             }
         }
         
+        // Random number
         private _getRandomNum() {
             return Math.floor(Math.random() * ((200 + 200 - 200) + 200));
         }
@@ -410,9 +433,20 @@ module scenes {
         private _switchLevel() : void {
             if (this._checkCollision(this._player, this._endArea) ||
                 this._checkCollision(this._player, this._shortcut)){
+                
+                config.Game.PLAYED = false;
                 stage.removeAllChildren();
-                scene = config.Scene.LEVEL2;
+                scene = config.Scene.MENU;
                 changeScene();
+            }
+        }
+        
+        // Spawn enemies faster
+        private _fasterSpawn() : void {
+            if (!this._spawnFaster && this._checkCollision(this._player, this._moreEnemiesTrigger)){
+                this._spawnDelay *= 0.25;
+                this._spawnFaster = true;
+                console.log("SpawningFaster");
             }
         }
         

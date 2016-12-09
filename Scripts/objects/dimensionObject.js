@@ -18,29 +18,47 @@ var objects;
         }
         DimensionObject.prototype.start = function () {
             this._dimension = config.Dimension.firstDimension;
-            if (this._physicalDimension == config.Dimension.firstDimension) {
-                this.gotoAndPlay("idle");
+            // Check if object exists in both worlds
+            if (this._physicalDimension != config.Dimension.dualDimension) {
+                // Check if object is first dimension
+                if (this._dimension == this._physicalDimension) {
+                    this.gotoAndPlay("idle");
+                    this.alpha = 1;
+                }
+                else if (this._dimension + 1 == this._physicalDimension) {
+                    this.gotoAndPlay("alt");
+                    this.alpha = 0.5;
+                }
             }
             else {
-                this.gotoAndPlay("alt");
+                this.gotoAndPlay("idle");
             }
         };
         DimensionObject.prototype.update = function () {
             _super.prototype.update.call(this);
         };
+        Object.defineProperty(DimensionObject.prototype, "physicalDimension", {
+            get: function () {
+                return this._physicalDimension;
+            },
+            enumerable: true,
+            configurable: true
+        });
         // Switch main image with shadow and vice versa
         DimensionObject.prototype.dimensionShift = function () {
             // Swap dimensions
             this._dimension = this._dimension == config.Dimension.firstDimension ?
                 config.Dimension.secondDimension :
                 config.Dimension.firstDimension;
-            if (this._dimension == this._physicalDimension) {
-                this.gotoAndPlay("idle");
-                this.alpha = 1;
-            }
-            else {
-                this.gotoAndPlay("alt");
-                this.alpha = 0.5;
+            if (this._physicalDimension != config.Dimension.dualDimension) {
+                if (this._dimension == this._physicalDimension) {
+                    this.gotoAndPlay("idle");
+                    this.alpha = 1;
+                }
+                else {
+                    this.gotoAndPlay("alt");
+                    this.alpha = 0.5;
+                }
             }
         };
         return DimensionObject;
