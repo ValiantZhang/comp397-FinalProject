@@ -8,6 +8,7 @@ module config {
         public static LEVEL2 : number = 2;
         public static LEVEL3 : number = 3;
         public static TUTORIAL : number = 4;
+        public static END : number = 5;
     }
 
     export class Screen {

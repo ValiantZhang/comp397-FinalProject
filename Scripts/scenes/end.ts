@@ -1,5 +1,5 @@
 module scenes {
-    export class Level2 extends objects.Scene {
+    export class End extends objects.Scene {
 
         private _bg : objects.Parallax;
         private _fg : objects.Parallax;
@@ -13,15 +13,15 @@ module scenes {
         private _platforms1 : objects.Platform[];
         private _spikes1 : objects.Spike[];
         private _movingSpikes1 : objects.Spike[];
-        private _enemyObstacles : objects.EnemyObstacle[];
-        private _invVerticalMovePlat : objects.InvPlatform[];
         private _enemySpawners : objects.EnemySpawner[];
         private _dimensionObjects : objects.DimensionObject[];
         private _player : objects.Player;
         private _enemies : objects.Enemy[];
         private _endArea : objects.HugeWall;
         private _shortcut : objects.HugeWall;
+        private _moreEnemiesTrigger : objects.HugeWall;
         private _scrollTrigger : number;
+        private _spawnFaster : boolean;
         private _spawnTime : number;
         private _spawnDelay : number;
         private _currentTick : number;
@@ -38,12 +38,14 @@ module scenes {
         }
 
         public start() : void {
+            // Initialize level values
+            {
             // Set level label
-            this._levelString = "The Woods";
+            this._levelString = "The End";
             this._levelLabel = new objects.Label("Zone: " + this._levelString, "28px Consolas", "#999",  
                                config.Screen.CENTER_X, 600);
             this.addChild(this._levelLabel);
-            
+                
             // Set dimension
             dimension = config.Dimension.firstDimension;
             
@@ -51,14 +53,13 @@ module scenes {
             this._currentTick = 0;
             this._currentTick = createjs.Ticker.getTime();
             this._spawnTime = this._currentTick + this._spawnDelay;
-            this._maxEnemies = 5;
+            this._maxEnemies = 15;
             this._enemiesSpawned = 0;
+            this._spawnFaster = false;
             // Create an empty array to store platforms and dimension objects
             this._platforms1 = [];
             this._spikes1 = [];
             this._movingSpikes1 = [];
-            this._enemyObstacles = [];
-            this._invVerticalMovePlat = [];
             this._enemies = [];
             this._enemySpawners = [];
             this._dimensionObjects = [];
@@ -71,16 +72,24 @@ module scenes {
             
             // Set slow-mo timer for dimension shift
             this._dimensionTimer = 3;
+            }
 
+            // Add GameObjects to the scene
+            {
             // Add bg
-            this._bg = new objects.Parallax(assets.getResult("bgBack2"));
+            this._bg = new objects.Parallax(assets.getResult("bgBack3"));
             this._bg.setAutoScroll(false);
             this.addChild(this._bg);
 
             // Add filters
-            this._dimensionFilter = new createjs.Bitmap(assets.getResult("filterLvl2"));
+            this._dimensionFilter = new createjs.Bitmap(assets.getResult("filterLvl3"));
             this.addChild(this._dimensionFilter);
             this._dimensionFilter2 = new createjs.Bitmap(assets.getResult("filterAlt"));
+            
+            // Scrollable object container
+            this._scrollableObjContainer = new createjs.Container();
+            
+            this._buildLevel();
             
             // Add foreground
             this._fg = new objects.Parallax(assets.getResult("bgFront"));
@@ -90,33 +99,33 @@ module scenes {
             this._fg2.y = 497;
             this.addChild(this._fg2);
             
-            // Scrollable object container
-            this._scrollableObjContainer = new createjs.Container();
-
-            this._buildLevel();
-            
             this._player = new objects.Player(player_anim,"player");
             this._player.position.x = config.Screen.CENTER_X;
             this._player.position.y = config.Screen.CENTER_Y + 150;
             this.addChild(this._player);
-
+            
             this.addChild(this._scrollableObjContainer);
+            }
 
+            // Force child index on foreground
             this.setChildIndex(this._fg, this.getNumChildren()-1);
             this.setChildIndex(this._levelLabel, this.getNumChildren()-1);
+            
+            // Bind keys
             window.onkeydown = this._onKeyDown;
             window.onkeyup = this._onKeyUp;
 
             stage.addChild(this);
             
             createjs.Sound.stop();
-            var ambientSound = createjs.Sound.play("woodsSound",{loop: -1});
-            ambientSound.play();
-            ambientSound.volume = 0.2;
+            // var ambientSound = createjs.Sound.play("villageSound",{loop: -1});
+            // ambientSound.play();
+            // ambientSound.volume = 0.2;
         }
 
         public update() : void {
-            // Player controls
+
+            // Player Controls
             {
             if (controls.SHIFT){
                 this._dimensionTimer = 10;
@@ -152,54 +161,47 @@ module scenes {
             }
             }
             
+            // Player collision
             this._keepAboveGround();
             this._checkPlatformCol();
 
+            // Game Object Updates
+            {
             this._player.update();
             this._switchLevel();
             
             for(let o of this._dimensionObjects ) {
                 o.update();
             }
-            
-            for(let enemy of this._enemies ) {
-                enemy.update();
-                // Check if enemies are dead and call cleanup
-                if (!enemy.isAlive){
-                    var index = this._enemies.indexOf(enemy);
-                    this._enemies.splice(index, 1);
-                }
+            // for(let enemy of this._enemies ) {
+            //     enemy.update();
+            //     // Check if enemies are dead and call cleanup
+            //     if (!enemy.isAlive){
+            //         var index = this._enemies.indexOf(enemy);
+            //         this._enemies.splice(index, 1);
+            //     }
                 
-                // Check collision with player
-                if (this._checkCollision(this._player, enemy)){
-                    enemy.endGame();
-                }
+            //     // Check collision with player
+            //     if (this._checkCollision(this._player, enemy)){
+            //         enemy.endGame();
+            //     }
+            // }
+            // for(let spike of this._spikes1 ) {
+            //     if (this._checkDimensionCollision(this._player, spike)){
+            //         spike.endGame();
+            //     }
+            // }
+            // for(let spike of this._movingSpikes1 ) {
+            //     if (this._checkDimensionCollision(this._player, spike)){
+            //         spike.endGame();
+            //     }
+            // }
             }
             
-            for(let spike of this._spikes1 ) {
-                if (this._checkDimensionCollision(this._player, spike)){
-                    spike.endGame();
-                }
-            }
-            for(let mspike of this._movingSpikes1 ) {
-                if (this._checkDimensionCollision(this._player, mspike)){
-                    mspike.endGame();
-                }
-            }
-            for(let eo of this._enemyObstacles ) {
-                eo.update();
-                if (this._checkCollision(this._player, eo)){
-                    eo.endGame();
-                } 
-                    if (this._player.position.x > eo.position.x - 150 && !eo.hasAttacked) {
-                    eo.attack();
-                }
-            }
-            
-            this._spawnEnemy();
+            // this._spawnEnemy();
         }
 
-        // Key down events
+        // Keydown events
         private _onKeyDown(event: KeyboardEvent) : void {
              switch(event.keyCode) {
                 case keys.W:
@@ -222,7 +224,7 @@ module scenes {
             }
         }
 
-        // Key up events
+        // Keyup events
         private _onKeyUp(event : KeyboardEvent) : void {
             switch(event.keyCode) {
                 case keys.W:
@@ -246,7 +248,7 @@ module scenes {
             }
         }
 
-        // Scroll elements
+        // Move scrollable elements
         private _scrollBG(speed : number) : void{
             if(dimension == config.Dimension.firstDimension){
                 this._bg.scroll(speed);
@@ -270,7 +272,7 @@ module scenes {
             }
         }
 
-        // Check bounds if need to scroll
+        // Check if player is at scroll counds
         private _checkScroll() : boolean {
             if(this._player.position.x > this._scrollTrigger && controls.RIGHT || 
                 this._player.position.x < this._scrollTrigger / 4 && controls.LEFT) {
@@ -305,6 +307,7 @@ module scenes {
                 this._player.changeZone(config.Zone.realZone);
                 this._bg.setSpeed(this._bg.getSpeed() / config.Zone.alternateZone);
                 this._fg.setSpeed(this._fg.getSpeed() / config.Zone.alternateZone);
+                controls.JUMP = false;
                 dimension = config.Dimension.firstDimension;
             }
             this.removeChild(this._scrollableObjContainer);
@@ -327,67 +330,59 @@ module scenes {
         // Populate level
         private _buildLevel():void{
             
-            // Dimension 1
-            var platforms1 =[[7.4,6],[8.7,5.5],[10,5],[12.5,0],[18,5],[20,4],[22,2], [28,5.5], [30,4], [34, 0], [33,6], [33.5,5.5], [34,5],[34.5,5.5], [35,5], [35.5,5.5], [36,6], [38,1], [38.5,1.5], [41,2.5], [41.5,2], [54, 2], [65, 2], [67, 2], [69, 4], [71, 4], [76,3.5]];
-            platforms1.forEach(el => {
-                var currentBlock = new objects.Platform("platformVines", new objects.Vector2(tileSize*el[0]+tileSize/2,100+tileSize/2*(el[1]-1)+tileSize/2))
-                this._platforms1.push(currentBlock);
-                this._dimensionObjects.push(currentBlock);
-                this._scrollableObjContainer.addChild(currentBlock);                
-            });
+            // Dimension One
+            // var platforms1 =[[10,3], [15.6,2], [23,5], [26,4], [31,6], [32.6,6], [34.2,6], [35.8,6], [37.4,6], [39,6], [46,5], [50,3], [54,1], [58,3]];
+            // platforms1.forEach(el => {
+            //     var currentBlock = new objects.Platform("platformWood",new objects.Vector2(tileSize*el[0]+tileSize/2,100+tileSize/2*(el[1]-1)+tileSize/2));
+            //     this._platforms1.push(currentBlock);
+            //     this._dimensionObjects.push(currentBlock);
+            //     this._scrollableObjContainer.addChild(currentBlock);                
+            // });
             
             // Dimension Two
-            var platforms2 =[[14,2], [25,0], [44, 1.5], [43.5, 4.5], [45, 4.5], [64, 3], [66, 1], [68, 3], [70, 1.5], [73.5, 4]];
-            platforms2.forEach(el => {
-                var currentBlock = new objects.Platform("platformVines",new objects.Vector2(tileSize*el[0]+tileSize/2,100+tileSize/2*(el[1]-1)+tileSize/2), 
-                                   config.Dimension.secondDimension);
+            // var platforms2 =[[11,1], [12.6,1], [14.2,1], [20,5], [29,4], [35,4], [40,4], [42,5], [44,6], [48,4], [52,2], [56,2], [60,4]];
+            // platforms2.forEach(el => {
+            //     var currentBlock = new objects.Platform("platformWood",new objects.Vector2(tileSize*el[0]+tileSize/2,100+tileSize/2*(el[1]-1)+tileSize/2), 
+            //                       config.Dimension.secondDimension);
                                    
-                this._platforms1.push(currentBlock);
-                this._dimensionObjects.push(currentBlock);
-                this._scrollableObjContainer.addChild(currentBlock);                
-            });
+            //     this._platforms1.push(currentBlock);
+            //     this._dimensionObjects.push(currentBlock);
+            //     this._scrollableObjContainer.addChild(currentBlock);                
+            // });
             
-            var enemyObstacles1 =[[12,6.5], [34.5,6.5], [41,7.5], [44,1.5], [66,6.5], [68,9], [70,1.5], [73.5, 4], [79, 8]];
-            enemyObstacles1.forEach(el => {
-                var currentBlock = new objects.EnemyObstacle(new objects.Vector2(tileSize*el[0]+tileSize/2,100+tileSize/2*(el[1]-1)+tileSize/2))
-                this._enemyObstacles.push(currentBlock);
-                this._dimensionObjects.push(currentBlock);
-                this._scrollableObjContainer.addChild(currentBlock);                
-            });
+            // Dual Dimension
+            // var spikes1 =[11,12.3,13.6,14.9,16.2,17.3,18.6];
+            // spikes1.forEach(el => {
+            //     var currentBlock =new objects.Spike(tileSize*el+tileSize/2, false, 
+            //                       "b_spike", config.Dimension.dualDimension);
+            //     this._spikes1.push(currentBlock);
+            //     this._dimensionObjects.push(currentBlock);
+            //     this._scrollableObjContainer.addChild(currentBlock);                
+            // });
             
-            var invVerticalMovePlat =[[27,3], [49, 3], [54, 1]];
-            invVerticalMovePlat.forEach(el => {
-                var currentBlock = new objects.InvPlatform("platform1_3_alt", new objects.Vector2(tileSize*el[0]+tileSize/2,100+tileSize/2*(el[1]-1)+tileSize/2), true, "horizontal", 4)
-                this._invVerticalMovePlat.push(currentBlock);
-                this._dimensionObjects.push(currentBlock);
-                this._scrollableObjContainer.addChild(currentBlock);                
-            });
+            // var movingSpikes1 =[20, 21.3, 22.6, 23.9, 25.2, 26.5, 27.8, 29.1, 30.4, 31.7, 33, 34.3, 35.6, 
+            //                     36.9, 38.2, 39.5, 40.8, 42.1, 43.4, 44.7, 46, 47.3, 48.6, 49.9, 51.2, 52.5, 
+            //                     53.8, 55.1, 56.4, 57.7, 59, 60.3];
+            // movingSpikes1.forEach(el => {
+            //     var currentBlock =new objects.Spike(tileSize*el+tileSize/2, true, 
+            //                       "b_spike", config.Dimension.dualDimension);
+                                    
+            //     this._movingSpikes1.push(currentBlock);
+            //     this._dimensionObjects.push(currentBlock);
+            //     this._scrollableObjContainer.addChild(currentBlock);                
+            // });
             
-            
-            var spikes1 =[ 23, 24, 25, 26.5, 45, 51, 55, 59.5, 61, 65];
-            spikes1.forEach(el => {
-                var currentBlock =new objects.Spike(tileSize*el+tileSize/2, false, 
-                                  "spike", config.Dimension.dualDimension);
-                this._spikes1.push(currentBlock);
-                this._dimensionObjects.push(currentBlock);
-                this._scrollableObjContainer.addChild(currentBlock);                
-            });
-            
-            var movingSpikes1 =[14, 15, 16, 28, 46, 47, 48, 49, 50, 52, 53, 54, 56, 58, 63, 64];
-            movingSpikes1.forEach(el => {
-                var currentBlock =new objects.Spike(tileSize*el+tileSize/2, true, "b_spike");
-                this._movingSpikes1.push(currentBlock);
-                this._dimensionObjects.push(currentBlock);
-                this._scrollableObjContainer.addChild(currentBlock);                
-            });
+            // Faster spawn trigger
+            // this._moreEnemiesTrigger = new objects.HugeWall(new objects.Vector2(5000, config.Screen.CENTER_Y));
+            // this._scrollableObjContainer.addChild(this._moreEnemiesTrigger);
             
             // End of level
-            this._nextLvlSign = new createjs.Bitmap(assets.getResult("signVillage"));
+            this._nextLvlSign = new createjs.Bitmap(assets.getResult("signWin"));
             this._nextLvlSign.y = 350;
-            this._nextLvlSign.x = 10000;
+            this._nextLvlSign.x = 1000;
             this.addChild(this._nextLvlSign);
             this._shortcut = new objects.HugeWall(new objects.Vector2(-100, config.Screen.CENTER_Y));
-            this._endArea = new objects.HugeWall(new objects.Vector2(11000, config.Screen.CENTER_Y));
+            this._endArea = new objects.HugeWall(new objects.Vector2(3000, config.Screen.CENTER_Y));
             this._scrollableObjContainer.addChild(this._endArea);
             this._scrollableObjContainer.addChild(this._shortcut);
             
@@ -398,11 +393,11 @@ module scenes {
             var newEnemy = new objects.Enemy(enemy1_anim, this._player.position);
             newEnemy.position.x = x;
             newEnemy.position.y = y;
-            this._enemies.push(newEnemy);
             this._scrollableObjContainer.addChild(newEnemy);
+            this._enemies.push(newEnemy);
         }
         
-        // Spawn Enemy
+        // Spawn enemies
         private _spawnEnemy(): void {
             if (createjs.Ticker.getTime() >= this._spawnTime){  
                 // Generate enemy on left edge
@@ -419,7 +414,7 @@ module scenes {
             return Math.floor(Math.random() * ((200 + 200 - 200) + 200));
         }
         
-       // Platform collision detection
+        // Platform collision detection
         private _checkPlatformCol(){
             // Check if player is colliding with any platforms
             var collisionCount = 0;
@@ -432,25 +427,11 @@ module scenes {
                     // Check if collision is with top of object
                     if (this._checkTopFace(this._player, a)){
                         this._player.setIsGrounded(true);
-                    } 
+                    }
                 }
             }
             if (collisionCount == 0 && this._player.y < config.Screen.CENTER_Y + 130){
                 this._player.setIsGrounded(false);
-            }
-            
-            if (dimension == config.Dimension.secondDimension){
-                for(let a of this._invVerticalMovePlat ) {
-                // Check for collision
-                if(this._checkCollision(this._player, a)) {
-                    collisionCount += 1;
-                    
-                    // Check if collision is with top of object
-                    if (this._checkTopFace(this._player, a)){
-                        this._player.setIsGrounded(true);
-                    } 
-                }
-            }
             }
         }
         
@@ -458,9 +439,20 @@ module scenes {
         private _switchLevel() : void {
             if (this._checkCollision(this._player, this._endArea) ||
                 this._checkCollision(this._player, this._shortcut)){
+                
+                config.Game.PLAYED = false;
                 stage.removeAllChildren();
-                scene = config.Scene.LEVEL3;
+                scene = config.Scene.MENU;
                 changeScene();
+            }
+        }
+        
+        // Spawn enemies faster
+        private _fasterSpawn() : void {
+            if (!this._spawnFaster && this._checkCollision(this._player, this._moreEnemiesTrigger)){
+                this._spawnDelay *= 0.25;
+                this._spawnFaster = true;
+                console.log("SpawningFaster");
             }
         }
         
@@ -532,6 +524,5 @@ module scenes {
                 a.dimensionShift();
             }
         }
-        
     }
 }

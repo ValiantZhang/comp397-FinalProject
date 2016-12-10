@@ -139,6 +139,11 @@ function changeScene() : void {
             stage.removeAllChildren();
             currentScene = new scenes.Tutorial();
             console.log("Starting Tutorial scene");
+            break;
+        case config.Scene.END :
+            stage.removeAllChildren();
+            currentScene = new scenes.End();
+            console.log("Starting End scene");
             break;    
     }
     

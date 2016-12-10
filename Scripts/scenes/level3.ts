@@ -50,6 +50,7 @@ module scenes {
             dimension = config.Dimension.firstDimension;
             
             this._spawnDelay = 3000 - this._getRandomNum();
+            this._currentTick = 0;
             this._currentTick = createjs.Ticker.getTime();
             this._spawnTime = this._currentTick + this._spawnDelay;
             this._maxEnemies = 15;
@@ -436,12 +437,16 @@ module scenes {
         
         // Move to new level
         private _switchLevel() : void {
-            if (this._checkCollision(this._player, this._endArea) ||
-                this._checkCollision(this._player, this._shortcut)){
-                
-                config.Game.PLAYED = false;
+            if (this._checkCollision(this._player, this._shortcut)){
+                //config.Game.PLAYED = false;
                 stage.removeAllChildren();
-                scene = config.Scene.MENU;
+                scene = config.Scene.END;
+                changeScene();
+            }
+            
+            if (this._checkCollision(this._player, this._endArea)){
+                stage.removeAllChildren();
+                scene = config.Scene.END;
                 changeScene();
             }
         }

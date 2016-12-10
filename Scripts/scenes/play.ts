@@ -413,8 +413,8 @@ module scenes {
         
         // Move to new level
         private _switchLevel() : void {
-            if (this._checkCollision(this._player, this._endArea) ||
-                this._checkCollision(this._player, this._shortcut)){
+            if (this._checkCollision(this._player, this._endArea) 
+            || this._checkCollision(this._player, this._shortcut)){
                 stage.removeAllChildren();
                 scene = config.Scene.LEVEL2;
                 changeScene();

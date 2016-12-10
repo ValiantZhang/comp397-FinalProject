@@ -27,3 +27,5 @@
 /// <reference path="../scenes/tutorial.ts" />
 /// <reference path="../scenes/play.ts" />
 /// <reference path="../scenes/level2.ts" />
+/// <reference path="../scenes/level3.ts" />
+/// <reference path="../scenes/end.ts" />
