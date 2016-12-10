@@ -28,6 +28,8 @@ module scenes {
         private _scrollableObjContainer : createjs.Container;
         private _levelLabel : objects.Label;
         private _levelString : string;
+        private _timerLabel : objects.Label;
+        private _timeStamp : number;
 
         constructor() {
             super();
@@ -35,11 +37,8 @@ module scenes {
         }
 
         public start() : void {
-            // Set level label
-            this._levelString = "City Outskirts";
-            this._levelLabel = new objects.Label("Level: " + this._levelString, "36px Consolas", "#0F0",  
-                               config.Screen.CENTER_X - 100, config.Screen.CENTER_Y - 100);
-            this.addChild(this._levelLabel);
+            this._timeStamp = new Date().getTime();
+            levelScore = 0;
             
             // Set dimension
             dimension = config.Dimension.firstDimension;
@@ -98,12 +97,17 @@ module scenes {
             
             // Set level label
             this._levelString = "City Outskirts";
-            this._levelLabel = new objects.Label("Zone: " + this._levelString, "28px Consolas", "#999",  
-                               config.Screen.CENTER_X, 600);
+            this._levelLabel = new objects.Label(this._levelString, "28px Consolas", "#999",  
+                               config.Screen.CENTER_X, 550);
             this.addChild(this._levelLabel);
+            
+            this._timerLabel = new objects.Label(Math.abs(globalScore / 1000).toFixed(2), "24px Consolas", "#0F0",  
+                               config.Screen.CENTER_X, 600);
+            this.addChild(this._timerLabel);
 
             this.setChildIndex(this._fg, this.getNumChildren()-1);
             this.setChildIndex(this._levelLabel, this.getNumChildren()-1);
+            this.setChildIndex(this._timerLabel, this.getNumChildren()-1);
             window.onkeydown = this._onKeyDown;
             window.onkeyup = this._onKeyUp;
 
@@ -186,6 +190,7 @@ module scenes {
             }
             
             this._spawnEnemy();
+            this._updateScore();
         }
 
         private _onKeyDown(event: KeyboardEvent) : void {
@@ -305,6 +310,8 @@ module scenes {
             this.addChild(this._fg2);
             this.removeChild(this._levelLabel);
             this.addChild(this._levelLabel);
+            this.removeChild(this._timerLabel);
+            this.addChild(this._timerLabel);
             
             // Change dimension of objects
             this._switchDimensionObjects();
@@ -413,8 +420,14 @@ module scenes {
         
         // Move to new level
         private _switchLevel() : void {
-            if (this._checkCollision(this._player, this._endArea) 
-            || this._checkCollision(this._player, this._shortcut)){
+            if (this._checkCollision(this._player, this._shortcut)){
+                stage.removeAllChildren();
+                scene = config.Scene.LEVEL2;
+                changeScene();
+            }
+            
+            if (this._checkCollision(this._player, this._endArea)){
+                level1HS = Math.abs(levelScore / 1000);
                 stage.removeAllChildren();
                 scene = config.Scene.LEVEL2;
                 changeScene();
@@ -488,6 +501,12 @@ module scenes {
             for(let a of this._dimensionObjects) {
                 a.dimensionShift();
             }
+        }
+        
+        private _updateScore():void{
+            globalScore = this._timeStamp - new Date().getTime();
+            levelScore = this._timeStamp - new Date().getTime();
+            this._timerLabel.text = Math.abs(globalScore / 1000).toFixed(2);
         }
     }
 }

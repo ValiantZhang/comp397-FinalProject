@@ -15,6 +15,12 @@ var currentScene : objects.Scene;
 var scene: number;
 
 var playerPosition : objects.Vector2;
+var globalScore: number = 0;
+var levelScore : number = 0;
+var highScore : number = 0;
+var level1HS : number = 0;
+var level2HS : number = 0;
+var level3HS : number = 0;
 
 var tileSize:number=128;
 var loadProgress;
@@ -50,6 +56,7 @@ var assetData:objects.Asset[] = [
     {id: "signVillage", src: "../../Assets/images/wood-sign-village.png"},
     {id: "signWin", src: "../../Assets/images/wood-sign-win.png"},
     {id: "signCity", src: "../../Assets/images/wood-sign-city.png"},
+    {id: "baby", src: "../../Assets/images/baby.png"},
     {id: "blackBox", src: "../../Assets/images/bg-blackbox.png"},
     {id: "deathFilter", src: "../../Assets/images/deathFilter.png"},
     //Audio
@@ -60,7 +67,8 @@ var assetData:objects.Asset[] = [
     {id: "dimensionSound", src: "../../Assets/audio/Ominous.mp3"},
     {id: "beastGrowl", src: "../../Assets/audio/Growl.mp3"},
     {id: "enemyDeathSound", src: "../../Assets/audio/Ping.mp3"},
-    {id: "playerDeathSound", src: "../../Assets/audio/Sighing.mp3"}
+    {id: "playerDeathSound", src: "../../Assets/audio/Sighing.mp3"},
+    {id: "babySounds", src: "../../Assets/audio/BabyGoogles.mp3"}
 ];
 
 function preload() {

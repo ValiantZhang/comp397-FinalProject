@@ -12,10 +12,15 @@ var scenes;
             //this.start();
         }
         Level2.prototype.start = function () {
+            this._prevScore = globalScore;
+            this._timeStamp = new Date().getTime();
+            levelScore = 0;
             // Set level label
             this._levelString = "The Woods";
-            this._levelLabel = new objects.Label("Zone: " + this._levelString, "28px Consolas", "#999", config.Screen.CENTER_X, 600);
+            this._levelLabel = new objects.Label(this._levelString, "28px Consolas", "#999", config.Screen.CENTER_X, 550);
             this.addChild(this._levelLabel);
+            this._timerLabel = new objects.Label(Math.abs(globalScore / 1000).toFixed(2), "24px Consolas", "#0F0", config.Screen.CENTER_X, 600);
+            this.addChild(this._timerLabel);
             // Set dimension
             dimension = config.Dimension.firstDimension;
             this._spawnDelay = 3000 - this._getRandomNum();
@@ -64,6 +69,7 @@ var scenes;
             this.addChild(this._scrollableObjContainer);
             this.setChildIndex(this._fg, this.getNumChildren() - 1);
             this.setChildIndex(this._levelLabel, this.getNumChildren() - 1);
+            this.setChildIndex(this._timerLabel, this.getNumChildren() - 1);
             window.onkeydown = this._onKeyDown;
             window.onkeyup = this._onKeyUp;
             stage.addChild(this);
@@ -151,6 +157,7 @@ var scenes;
                 }
             }
             this._spawnEnemy();
+            this._updateScore();
         };
         // Key down events
         Level2.prototype._onKeyDown = function (event) {
@@ -268,6 +275,8 @@ var scenes;
             this.addChild(this._fg2);
             this.removeChild(this._levelLabel);
             this.addChild(this._levelLabel);
+            this.removeChild(this._timerLabel);
+            this.addChild(this._timerLabel);
             // Change dimension of objects
             this._switchDimensionObjects();
         };
@@ -385,8 +394,14 @@ var scenes;
         };
         // Move to new level
         Level2.prototype._switchLevel = function () {
-            if (this._checkCollision(this._player, this._endArea) ||
-                this._checkCollision(this._player, this._shortcut)) {
+            if (this._checkCollision(this._player, this._shortcut)) {
+                stage.removeAllChildren();
+                scene = config.Scene.LEVEL3;
+                changeScene();
+            }
+            if (this._checkCollision(this._player, this._endArea)) {
+                level2HS = Math.abs(levelScore / 1000);
+                ;
                 stage.removeAllChildren();
                 scene = config.Scene.LEVEL3;
                 changeScene();
@@ -451,6 +466,11 @@ var scenes;
                 var a = _a[_i];
                 a.dimensionShift();
             }
+        };
+        Level2.prototype._updateScore = function () {
+            globalScore = this._prevScore + this._timeStamp - new Date().getTime();
+            levelScore = this._timeStamp - new Date().getTime();
+            this._timerLabel.text = Math.abs(globalScore / 1000).toFixed(2);
         };
         return Level2;
     }(objects.Scene));

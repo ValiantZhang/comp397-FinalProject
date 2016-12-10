@@ -30,6 +30,9 @@ module scenes {
         private _scrollableObjContainer : createjs.Container;
         private _levelLabel : objects.Label;
         private _levelString : string;
+        private _timerLabel : objects.Label;
+        private _timeStamp : number;
+        private _prevScore : number;
 
 
         constructor() {
@@ -40,11 +43,19 @@ module scenes {
         public start() : void {
             // Initialize level values
             {
+            this._prevScore = globalScore;
+            this._timeStamp = new Date().getTime();
+            levelScore = 0;    
+                
             // Set level label
             this._levelString = "The Village";
-            this._levelLabel = new objects.Label("Zone: " + this._levelString, "28px Consolas", "#999",  
-                               config.Screen.CENTER_X, 600);
+            this._levelLabel = new objects.Label(this._levelString, "28px Consolas", "#999",  
+                               config.Screen.CENTER_X, 550);
             this.addChild(this._levelLabel);
+            
+            this._timerLabel = new objects.Label(Math.abs(globalScore / 1000).toFixed(2), "24px Consolas", "#0F0",  
+                               config.Screen.CENTER_X, 600);
+            this.addChild(this._timerLabel);
                 
             // Set dimension
             dimension = config.Dimension.firstDimension;
@@ -110,6 +121,7 @@ module scenes {
             // Force child index on foreground
             this.setChildIndex(this._fg, this.getNumChildren()-1);
             this.setChildIndex(this._levelLabel, this.getNumChildren()-1);
+            this.setChildIndex(this._timerLabel, this.getNumChildren()-1);
             
             // Bind keys
             window.onkeydown = this._onKeyDown;
@@ -199,6 +211,7 @@ module scenes {
             }
             
             this._spawnEnemy();
+            this._updateScore();
         }
 
         // Keydown events
@@ -438,13 +451,14 @@ module scenes {
         // Move to new level
         private _switchLevel() : void {
             if (this._checkCollision(this._player, this._shortcut)){
-                //config.Game.PLAYED = false;
                 stage.removeAllChildren();
                 scene = config.Scene.END;
                 changeScene();
             }
             
             if (this._checkCollision(this._player, this._endArea)){
+                level3HS = Math.abs(levelScore / 1000);;
+                
                 stage.removeAllChildren();
                 scene = config.Scene.END;
                 changeScene();
@@ -527,6 +541,12 @@ module scenes {
             for(let a of this._dimensionObjects) {
                 a.dimensionShift();
             }
+        }
+        
+        private _updateScore():void{
+            globalScore = this._prevScore + this._timeStamp - new Date().getTime();
+            levelScore = this._timeStamp - new Date().getTime();
+            this._timerLabel.text = Math.abs(globalScore / 1000).toFixed(2);
         }
     }
 }

@@ -14,10 +14,15 @@ var scenes;
         Level3.prototype.start = function () {
             // Initialize level values
             {
+                this._prevScore = globalScore;
+                this._timeStamp = new Date().getTime();
+                levelScore = 0;
                 // Set level label
                 this._levelString = "The Village";
-                this._levelLabel = new objects.Label("Zone: " + this._levelString, "28px Consolas", "#999", config.Screen.CENTER_X, 600);
+                this._levelLabel = new objects.Label(this._levelString, "28px Consolas", "#999", config.Screen.CENTER_X, 550);
                 this.addChild(this._levelLabel);
+                this._timerLabel = new objects.Label(Math.abs(globalScore / 1000).toFixed(2), "24px Consolas", "#0F0", config.Screen.CENTER_X, 600);
+                this.addChild(this._timerLabel);
                 // Set dimension
                 dimension = config.Dimension.firstDimension;
                 this._spawnDelay = 3000 - this._getRandomNum();
@@ -70,6 +75,7 @@ var scenes;
             // Force child index on foreground
             this.setChildIndex(this._fg, this.getNumChildren() - 1);
             this.setChildIndex(this._levelLabel, this.getNumChildren() - 1);
+            this.setChildIndex(this._timerLabel, this.getNumChildren() - 1);
             // Bind keys
             window.onkeydown = this._onKeyDown;
             window.onkeyup = this._onKeyUp;
@@ -153,6 +159,7 @@ var scenes;
                 }
             }
             this._spawnEnemy();
+            this._updateScore();
         };
         // Keydown events
         Level3.prototype._onKeyDown = function (event) {
@@ -368,12 +375,13 @@ var scenes;
         // Move to new level
         Level3.prototype._switchLevel = function () {
             if (this._checkCollision(this._player, this._shortcut)) {
-                //config.Game.PLAYED = false;
                 stage.removeAllChildren();
                 scene = config.Scene.END;
                 changeScene();
             }
             if (this._checkCollision(this._player, this._endArea)) {
+                level3HS = Math.abs(levelScore / 1000);
+                ;
                 stage.removeAllChildren();
                 scene = config.Scene.END;
                 changeScene();
@@ -446,6 +454,11 @@ var scenes;
                 var a = _a[_i];
                 a.dimensionShift();
             }
+        };
+        Level3.prototype._updateScore = function () {
+            globalScore = this._prevScore + this._timeStamp - new Date().getTime();
+            levelScore = this._timeStamp - new Date().getTime();
+            this._timerLabel.text = Math.abs(globalScore / 1000).toFixed(2);
         };
         return Level3;
     }(objects.Scene));

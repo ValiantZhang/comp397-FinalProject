@@ -11,6 +11,12 @@ var dimension = config.Dimension.firstDimension;
 var currentScene;
 var scene;
 var playerPosition;
+var globalScore = 0;
+var levelScore = 0;
+var highScore = 0;
+var level1HS = 0;
+var level2HS = 0;
+var level3HS = 0;
 var tileSize = 128;
 var loadProgress;
 var loadingBar;
@@ -44,6 +50,7 @@ var assetData = [
     { id: "signVillage", src: "../../Assets/images/wood-sign-village.png" },
     { id: "signWin", src: "../../Assets/images/wood-sign-win.png" },
     { id: "signCity", src: "../../Assets/images/wood-sign-city.png" },
+    { id: "baby", src: "../../Assets/images/baby.png" },
     { id: "blackBox", src: "../../Assets/images/bg-blackbox.png" },
     { id: "deathFilter", src: "../../Assets/images/deathFilter.png" },
     //Audio
@@ -54,7 +61,8 @@ var assetData = [
     { id: "dimensionSound", src: "../../Assets/audio/Ominous.mp3" },
     { id: "beastGrowl", src: "../../Assets/audio/Growl.mp3" },
     { id: "enemyDeathSound", src: "../../Assets/audio/Ping.mp3" },
-    { id: "playerDeathSound", src: "../../Assets/audio/Sighing.mp3" }
+    { id: "playerDeathSound", src: "../../Assets/audio/Sighing.mp3" },
+    { id: "babySounds", src: "../../Assets/audio/BabyGoogles.mp3" }
 ];
 function preload() {
     showLoading();
