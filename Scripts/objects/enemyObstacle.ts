@@ -25,6 +25,8 @@ module objects {
             this.checkDimension();
             if (this._hasAttacked){
                 if (this.position.y > this._startingY - 150){
+                    var attackSound = createjs.Sound.play("beastGrowl",{loop: 0});
+                    attackSound.play();
                     this.position.y -= 3;
                 }
             }

@@ -30,6 +30,7 @@ var objects;
             if (this.mobile && this.orientation == "horizontal") {
                 this.checkTimer();
                 this.position.x += this.direction;
+                ;
             }
         };
         InvPlatform.prototype.checkTimer = function () {
@@ -45,7 +46,7 @@ var objects;
                 this.checkIfMobile();
             }
             else {
-                this.alpha = 0.1;
+                this.alpha = 0.3;
             }
         };
         return InvPlatform;

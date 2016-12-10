@@ -108,6 +108,11 @@ module scenes {
             window.onkeyup = this._onKeyUp;
 
             stage.addChild(this);
+            
+            createjs.Sound.stop();
+            var ambientSound = createjs.Sound.play("citySound",{loop: -1});
+            ambientSound.play();
+            ambientSound.volume = 0.2;
         }
 
         public update() : void {

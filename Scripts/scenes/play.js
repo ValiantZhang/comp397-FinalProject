@@ -68,6 +68,10 @@ var scenes;
             window.onkeydown = this._onKeyDown;
             window.onkeyup = this._onKeyUp;
             stage.addChild(this);
+            createjs.Sound.stop();
+            var ambientSound = createjs.Sound.play("citySound", { loop: -1 });
+            ambientSound.play();
+            ambientSound.volume = 0.2;
         };
         Play.prototype.update = function () {
             if (controls.SHIFT) {

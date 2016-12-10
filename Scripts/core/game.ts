@@ -49,7 +49,16 @@ var assetData:objects.Asset[] = [
     {id: "signWin", src: "../../Assets/images/wood-sign-win.png"},
     {id: "signCity", src: "../../Assets/images/wood-sign-city.png"},
     {id: "blackBox", src: "../../Assets/images/bg-blackbox.png"},
-    {id: "deathFilter", src: "../../Assets/images/deathFilter.png"}
+    {id: "deathFilter", src: "../../Assets/images/deathFilter.png"},
+    //Audio
+    {id: "menuSong", src: "../../Assets/audio/ChopNocNo13.mp3"},
+    {id: "citySound", src: "../../Assets/audio/Crickets.mp3"},
+    {id: "woodsSound", src: "../../Assets/audio/Forest.mp3"},
+    {id: "villageSound", src: "../../Assets/audio/Wind.mp3"},
+    {id: "dimensionSound", src: "../../Assets/audio/Ominous.mp3"},
+    {id: "beastGrowl", src: "../../Assets/audio/Growl.mp3"},
+    {id: "enemyDeathSound", src: "../../Assets/audio/Ping.mp3"},
+    {id: "playerDeathSound", src: "../../Assets/audio/Sighing.mp3"}
 ];
 
 function preload() {

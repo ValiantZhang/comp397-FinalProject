@@ -107,6 +107,11 @@ module scenes {
             window.onkeyup = this._onKeyUp;
 
             stage.addChild(this);
+            
+            createjs.Sound.stop();
+            var ambientSound = createjs.Sound.play("woodsSound",{loop: -1});
+            ambientSound.play();
+            ambientSound.volume = 0.2;
         }
 
         public update() : void {
@@ -175,16 +180,17 @@ module scenes {
                     spike.endGame();
                 }
             }
-            for(let spike of this._movingSpikes1 ) {
-                if (this._checkDimensionCollision(this._player, spike)){
-                    spike.endGame();
+            for(let mspike of this._movingSpikes1 ) {
+                if (this._checkDimensionCollision(this._player, mspike)){
+                    mspike.endGame();
                 }
             }
             for(let eo of this._enemyObstacles ) {
                 eo.update();
                 if (this._checkCollision(this._player, eo)){
                     eo.endGame();
-                } if (this._player.position.x > eo.position.x - 150 && !eo.hasAttacked) {
+                } 
+                    if (this._player.position.x > eo.position.x - 150 && !eo.hasAttacked) {
                     eo.attack();
                 }
             }
@@ -321,7 +327,7 @@ module scenes {
         private _buildLevel():void{
             
             // Dimension 1
-            var platforms1 =[[7.4,6],[8.7,5.5],[10,5],[12.5,0],[18,5],[20,4],[22,2], [28,5.5], [30,4], [34, 0], [33,6], [33.5,5.5], [34,5],[34.5,5.5], [35,5], [35.5,5.5], [36,6]];
+            var platforms1 =[[7.4,6],[8.7,5.5],[10,5],[12.5,0],[18,5],[20,4],[22,2], [28,5.5], [30,4], [34, 0], [33,6], [33.5,5.5], [34,5],[34.5,5.5], [35,5], [35.5,5.5], [36,6], [38,1], [38.5,1.5], [41,2.5], [41.5,2], [54, 2], [65, 2], [67, 2], [69, 4], [71, 4], [76,3.5]];
             platforms1.forEach(el => {
                 var currentBlock = new objects.Platform("platformVines", new objects.Vector2(tileSize*el[0]+tileSize/2,100+tileSize/2*(el[1]-1)+tileSize/2))
                 this._platforms1.push(currentBlock);
@@ -330,7 +336,7 @@ module scenes {
             });
             
             // Dimension Two
-            var platforms2 =[[14,2], [25,0]];
+            var platforms2 =[[14,2], [25,0], [44, 1.5], [43.5, 4.5], [45, 4.5], [64, 3], [66, 1], [68, 3], [70, 1.5], [73.5, 4]];
             platforms2.forEach(el => {
                 var currentBlock = new objects.Platform("platformVines",new objects.Vector2(tileSize*el[0]+tileSize/2,100+tileSize/2*(el[1]-1)+tileSize/2), 
                                    config.Dimension.secondDimension);
@@ -340,7 +346,7 @@ module scenes {
                 this._scrollableObjContainer.addChild(currentBlock);                
             });
             
-            var enemyObstacles1 =[[12,7], [34.5,7]];
+            var enemyObstacles1 =[[12,6.5], [34.5,6.5], [41,7.5], [44,1.5], [66,6.5], [68,9], [70,1.5], [73.5, 4], [79, 8]];
             enemyObstacles1.forEach(el => {
                 var currentBlock = new objects.EnemyObstacle(new objects.Vector2(tileSize*el[0]+tileSize/2,100+tileSize/2*(el[1]-1)+tileSize/2))
                 this._enemyObstacles.push(currentBlock);
@@ -348,16 +354,16 @@ module scenes {
                 this._scrollableObjContainer.addChild(currentBlock);                
             });
             
-            var invVerticalMovePlat =[[24,3]];
+            var invVerticalMovePlat =[[27,3], [49, 3], [54, 1]];
             invVerticalMovePlat.forEach(el => {
-                var currentBlock = new objects.InvPlatform("platform1_3_alt", new objects.Vector2(tileSize*el[0]+tileSize/2,100+tileSize/2*(el[1]-1)+tileSize/2), true, "horizontal", 3)
+                var currentBlock = new objects.InvPlatform("platform1_3_alt", new objects.Vector2(tileSize*el[0]+tileSize/2,100+tileSize/2*(el[1]-1)+tileSize/2), true, "horizontal", 4)
                 this._invVerticalMovePlat.push(currentBlock);
                 this._dimensionObjects.push(currentBlock);
                 this._scrollableObjContainer.addChild(currentBlock);                
             });
             
             
-            var spikes1 =[ 23, 24, 25, 26.5];
+            var spikes1 =[ 23, 24, 25, 26.5, 45, 51, 55, 59.5, 61, 65];
             spikes1.forEach(el => {
                 var currentBlock =new objects.Spike(tileSize*el+tileSize/2, false, 
                                   "spike", config.Dimension.dualDimension);
@@ -366,7 +372,7 @@ module scenes {
                 this._scrollableObjContainer.addChild(currentBlock);                
             });
             
-            var movingSpikes1 =[14, 15, 16, 28];
+            var movingSpikes1 =[14, 15, 16, 28, 46, 47, 48, 49, 50, 52, 53, 54, 56, 58, 63, 64];
             movingSpikes1.forEach(el => {
                 var currentBlock =new objects.Spike(tileSize*el+tileSize/2, true, "b_spike");
                 this._movingSpikes1.push(currentBlock);
@@ -377,10 +383,10 @@ module scenes {
             // End of level
             this._nextLvlSign = new createjs.Bitmap(assets.getResult("signVillage"));
             this._nextLvlSign.y = 350;
-            this._nextLvlSign.x = 7500;
+            this._nextLvlSign.x = 10000;
             this.addChild(this._nextLvlSign);
             this._shortcut = new objects.HugeWall(new objects.Vector2(-100, config.Screen.CENTER_Y));
-            this._endArea = new objects.HugeWall(new objects.Vector2(8000, config.Screen.CENTER_Y));
+            this._endArea = new objects.HugeWall(new objects.Vector2(11000, config.Screen.CENTER_Y));
             this._scrollableObjContainer.addChild(this._endArea);
             this._scrollableObjContainer.addChild(this._shortcut);
             

@@ -69,6 +69,8 @@ var objects;
         };
         Enemy.prototype.destroy = function (event) {
             if (dimension == config.Dimension.secondDimension) {
+                var deathSound = createjs.Sound.play("enemyDeathSound", { loop: 0 });
+                deathSound.play();
                 this._alive = false;
                 this.parent.removeChild(this);
                 currentScene.update();

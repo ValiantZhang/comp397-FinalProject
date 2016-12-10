@@ -73,6 +73,10 @@ var scenes;
             window.onkeydown = this._onKeyDown;
             window.onkeyup = this._onKeyUp;
             stage.addChild(this);
+            createjs.Sound.stop();
+            var ambientSound = createjs.Sound.play("villageSound", { loop: -1 });
+            ambientSound.play();
+            ambientSound.volume = 0.2;
         };
         Level3.prototype.update = function () {
             // Player Controls

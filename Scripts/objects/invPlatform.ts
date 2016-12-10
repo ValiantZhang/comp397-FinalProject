@@ -4,8 +4,6 @@ module objects {
         private mobile : boolean;
         private direction : number=1;
         private orientation : string;
-        private maxBound : number;
-        private minBound : number;
         
         private _switchTime : number;
         private _switchDelay : number;
@@ -19,8 +17,8 @@ module objects {
            this.orientation = moveDir;
 
            this._switchDelay = switchDirTimer * 1000;
-            this._currentTick = createjs.Ticker.getTime();
-            this._switchTime = this._currentTick + this._switchDelay;
+           this._currentTick = createjs.Ticker.getTime();
+           this._switchTime = this._currentTick + this._switchDelay;
            
            this.x = this.position.x = defaultPosition.x;
            this.y = this.position.y = defaultPosition.y;
@@ -45,8 +43,7 @@ module objects {
             if(this.mobile && this.orientation == "horizontal")
             {
                 this.checkTimer();
-                this.position.x+=this.direction; 
-                    
+                this.position.x+=this.direction;;
             }
         }
         
@@ -65,7 +62,7 @@ module objects {
                 this.checkIfMobile();
             }
             else{
-                this.alpha = 0.1;
+                this.alpha = 0.3;
             }
         }
 

@@ -93,6 +93,9 @@ module scenes {
             // Add menu scene to global stage container
             stage.addChild(this);
             window.onkeydown = this._onKeyDown;
+            createjs.Sound.stop();
+            createjs.Sound.play("menuSong",{loop: -1});
+            createjs.Sound.volume = 0.2;
         }
 
         public update() : void {
