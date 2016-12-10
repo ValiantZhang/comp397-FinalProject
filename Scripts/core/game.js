@@ -155,7 +155,7 @@ function updateProgress() {
 function showLoading() {
     canvas = document.getElementById("canvas");
     stage = new createjs.Stage(canvas);
-    var loadLabel = new objects.Label("Shifting Dimensions", "28px Consolas", "#FFFFFF", config.Screen.CENTER_X, config.Screen.CENTER_Y - 100);
+    var loadLabel = new objects.Label("Shifting Dimensions...", "26px Consolas", "#FFFFFF", config.Screen.CENTER_X, config.Screen.CENTER_Y - 100);
     stage.addChild(loadLabel);
     loadingBar = new createjs.Shape();
     var lBWidth = 500;

@@ -445,6 +445,7 @@ var scenes;
             }
             if (this._checkCollision(this._player, this._showArea3)) {
                 this._showLabel.text = "Your traversed the village in " + level3HS.toFixed(2);
+                createjs.Sound.stop();
                 var ambientSound = createjs.Sound.play("babySounds", { loop: -1 });
                 ambientSound.play();
                 ambientSound.volume = 0.2;
@@ -452,7 +453,6 @@ var scenes;
             if (this._checkCollision(this._player, this._showHighScore)) {
                 this._showLabel.text = "Your total time is " + level2HS.toFixed(2);
                 this._showLabel.x = config.Screen.CENTER_X - 120;
-                createjs.Sound.stop();
             }
             if (this._checkCollision(this._player, this._showThanks)) {
                 this._showLabel.text = "Thank you for playing";
