@@ -17,6 +17,8 @@ var scene: number;
 var playerPosition : objects.Vector2;
 
 var tileSize:number=128;
+var loadProgress;
+var loadingBar : createjs.Shape;
 
 // Preload Assets required
 var assetData:objects.Asset[] = [
@@ -62,11 +64,14 @@ var assetData:objects.Asset[] = [
 ];
 
 function preload() {
+    showLoading();
     // Create a queue for assets being loaded
     assets = new createjs.LoadQueue(false);
     assets.installPlugin(createjs.Sound);
     // Register callback function to be run when assets complete loading.
+    loadProgress = assets.progress;
     assets.on("complete", init, this);
+    assets.on("progress", updateProgress, this);
     assets.loadManifest(assetData);
 }
 
@@ -148,3 +153,38 @@ function changeScene() : void {
     }
     
 }
+
+//Update the loading bar's size
+function updateProgress(){
+    loadProgress = assets.progress;
+    loadingBar.scaleX = loadProgress * 500;
+    stage.update();
+}
+
+//Add loading bar shape and label
+function showLoading() {
+	canvas = document.getElementById("canvas");
+	stage = new createjs.Stage(canvas);
+	
+	var loadLabel = new objects.Label("Shifting Dimensions", "28px Consolas", "#FFFFFF", config.Screen.CENTER_X, config.Screen.CENTER_Y - 100);
+    stage.addChild(loadLabel);
+    
+    loadingBar = new createjs.Shape();
+    var lBWidth = 500;
+    var lBHeight = 20;
+    var lBColor = "#FFFFFF";
+    loadingBar.graphics.beginFill(lBColor).drawRect(0, 0, 1, lBHeight).endFill();
+    loadingBar.x = config.Screen.CENTER_X - (lBWidth/2);
+    loadingBar.y = config.Screen.CENTER_Y;
+    stage.addChild(loadingBar);
+    
+    var lBFrame = new createjs.Shape();
+    var lBFramePadding = 4;
+    lBFrame.graphics.setStrokeStyle(1).beginStroke(lBColor).drawRect(-lBFramePadding/2, -lBFramePadding/2, lBWidth + lBFramePadding, lBHeight + lBFramePadding).endStroke();
+    lBFrame.x = config.Screen.CENTER_X - (lBWidth/2);
+    lBFrame.y = config.Screen.CENTER_Y;
+    stage.addChild(lBFrame);
+    
+    stage.update();
+}
+
