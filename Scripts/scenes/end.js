@@ -446,12 +446,12 @@ var scenes;
             if (this._checkCollision(this._player, this._showArea3)) {
                 this._showLabel.text = "Your traversed the village in " + level3HS.toFixed(2);
                 createjs.Sound.stop();
-                var ambientSound = createjs.Sound.play("babySounds", { loop: -1 });
+                var ambientSound = createjs.Sound.play("babySounds", { loop: 3 });
                 ambientSound.play();
                 ambientSound.volume = 0.2;
             }
             if (this._checkCollision(this._player, this._showHighScore)) {
-                this._showLabel.text = "Your total time is " + level2HS.toFixed(2);
+                this._showLabel.text = "Your total time is " + Math.abs(globalScore / 1000).toFixed(2);
                 this._showLabel.x = config.Screen.CENTER_X - 120;
             }
             if (this._checkCollision(this._player, this._showThanks)) {
