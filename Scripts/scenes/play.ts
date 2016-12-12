@@ -367,7 +367,7 @@ module scenes {
             this._nextLvlSign.x = 7500;
             this.addChild(this._nextLvlSign);
             this._endArea = new objects.HugeWall(new objects.Vector2(8000, config.Screen.CENTER_Y));
-            this._shortcut = new objects.HugeWall(new objects.Vector2(-100, config.Screen.CENTER_Y));
+            this._shortcut = new objects.HugeWall(new objects.Vector2(-500, config.Screen.CENTER_Y));
             this._scrollableObjContainer.addChild(this._endArea);
             this._scrollableObjContainer.addChild(this._shortcut);
             
