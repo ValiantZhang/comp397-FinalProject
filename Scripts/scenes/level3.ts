@@ -452,7 +452,7 @@ module scenes {
         private _switchLevel() : void {
             if (this._checkCollision(this._player, this._shortcut)){
                 stage.removeAllChildren();
-                scene = config.Scene.END;
+                scene = config.Scene.LEVEL2;
                 changeScene();
             }
             

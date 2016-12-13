@@ -9,6 +9,8 @@ var objects;
         __extends(Enemy, _super);
         function Enemy(animation, target) {
             _super.call(this, animation, "enemy");
+            this._dying1 = false;
+            this._dying2 = false;
             this._alive = true;
             this._speed = 6;
             this.target = target;
@@ -33,6 +35,7 @@ var objects;
             this._hoverReticle.y = stage.mouseY;
             this.position.x += this._scaleX * this._speed;
             this.position.y += this._scaleY * this._speed;
+            this._deathAnimation();
             this.checkDimension();
         };
         Enemy.prototype.setPosition = function (pos) {
@@ -71,9 +74,24 @@ var objects;
             if (dimension == config.Dimension.secondDimension) {
                 var deathSound = createjs.Sound.play("enemyDeathSound", { loop: 0 });
                 deathSound.play();
-                this._alive = false;
-                this.parent.removeChild(this);
+                this._dying1 = true;
+            }
+        };
+        Enemy.prototype._deathAnimation = function () {
+            if (this.scaleX < 1.2 && this._dying1) {
+                this.scaleX += 0.01;
+                this.scaleY += 0.01;
                 currentScene.update();
+            }
+            else if (this.scaleX > 0 && this._dying2) {
+                this._dying2 = true;
+                this._dying1 = false;
+                this.scaleX -= 0.01;
+                this.scaleY -= 0.01;
+                currentScene.update();
+            }
+            else {
+                this._alive = false;
             }
         };
         Object.defineProperty(Enemy.prototype, "isAlive", {

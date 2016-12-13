@@ -376,7 +376,7 @@ var scenes;
         Level3.prototype._switchLevel = function () {
             if (this._checkCollision(this._player, this._shortcut)) {
                 stage.removeAllChildren();
-                scene = config.Scene.END;
+                scene = config.Scene.LEVEL2;
                 changeScene();
             }
             if (this._checkCollision(this._player, this._endArea)) {

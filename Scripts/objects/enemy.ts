@@ -9,6 +9,8 @@ module objects {
         public height:number;
         public center:objects.Vector2;
         
+        private _dying1:boolean = false;
+        private _dying2:boolean = false;
         private _alive:boolean = true;
         private _scaleX:number;
         private _scaleY:number;
@@ -54,6 +56,8 @@ module objects {
             
             this.position.x += this._scaleX * this._speed;
             this.position.y += this._scaleY * this._speed;    
+            
+            this._deathAnimation();
             
             this.checkDimension();
             
@@ -102,9 +106,24 @@ module objects {
             if (dimension == config.Dimension.secondDimension){
                 var deathSound = createjs.Sound.play("enemyDeathSound",{loop: 0});
                 deathSound.play();
-                this._alive = false;
-                this.parent.removeChild(this);
+                this._dying1 = true;
+            }
+        }
+        
+        private _deathAnimation() : void {
+            if (this.scaleX < 1.2 && this._dying1){
+                this.scaleX += 0.01;
+                this.scaleY += 0.01;
                 currentScene.update();
+            } else if (this.scaleX > 0 && this._dying2){
+                this._dying2 = true;
+                this._dying1 = false;
+                this.scaleX -= 0.01;
+                this.scaleY -= 0.01;
+                currentScene.update();
+            } else {
+                this._alive = false;
+                //currentScene.removeChild(this);
             }
         }
         

@@ -109,6 +109,8 @@ module scenes {
         private _playBtnClick(event : createjs.MouseEvent) {
             config.Game.PLAYED = true;
             scene = config.Scene.GAME;
+            // Set dimension
+            dimension = config.Dimension.firstDimension;
             changeScene();
         }
         

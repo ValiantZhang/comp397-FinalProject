@@ -77,6 +77,8 @@ var scenes;
         Menu.prototype._playBtnClick = function (event) {
             config.Game.PLAYED = true;
             scene = config.Scene.GAME;
+            // Set dimension
+            dimension = config.Dimension.firstDimension;
             changeScene();
         };
         Menu.prototype._howToPlayBtnClick = function (event) {
