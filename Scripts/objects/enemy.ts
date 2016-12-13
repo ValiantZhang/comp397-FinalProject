@@ -57,10 +57,7 @@ module objects {
             this.position.x += this._scaleX * this._speed;
             this.position.y += this._scaleY * this._speed;    
             
-            this._deathAnimation();
-            
             this.checkDimension();
-            
         }
 
         public setPosition(pos : objects.Vector2) : void {
@@ -106,24 +103,9 @@ module objects {
             if (dimension == config.Dimension.secondDimension){
                 var deathSound = createjs.Sound.play("enemyDeathSound",{loop: 0});
                 deathSound.play();
-                this._dying1 = true;
-            }
-        }
-        
-        private _deathAnimation() : void {
-            if (this.scaleX < 1.2 && this._dying1){
-                this.scaleX += 0.01;
-                this.scaleY += 0.01;
-                currentScene.update();
-            } else if (this.scaleX > 0 && this._dying2){
-                this._dying2 = true;
-                this._dying1 = false;
-                this.scaleX -= 0.01;
-                this.scaleY -= 0.01;
-                currentScene.update();
-            } else {
                 this._alive = false;
-                //currentScene.removeChild(this);
+                this.parent.removeChild(this);
+                currentScene.update();
             }
         }
         
